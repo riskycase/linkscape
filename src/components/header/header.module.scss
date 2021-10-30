@@ -1,4 +1,57 @@
-.navItem {
-  display: flex;
-  justify-content: flex-end;
+.navbar {
+  overflow: hidden;
+  --transition-time: 500ms;
+  .navItem {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .signInButton {
+      margin: 0.5rem;
+    }
+    .userContainer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex-direction: column;
+      .userDisplay {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        flex-direction: row;
+        .userImage {
+          height: 2rem;
+          border-radius: 50%;
+        }
+        .dropdown {
+          --size: 1rem;
+          height: 0;
+          width: 0;
+          transition: transform var(--transition-time);
+          margin: calc(0.5 * var(--size));
+          border-top: var(--size) solid white;
+          border-left: calc(0.5 * var(--size)) solid transparent;
+          border-right: calc(0.5 * var(--size)) solid transparent;
+        }
+        .flip {
+          transform: rotateX(180deg);
+        }
+      }
+      .userOptions {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        transition: max-height var(--transition-time);
+        max-height: 10rem;
+        .optionsList {
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+      }
+      .hidden {
+        max-height: 0;
+      }
+    }
+  }
 }
