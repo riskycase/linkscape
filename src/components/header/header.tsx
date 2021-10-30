@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const provider = new GoogleAuthProvider();
 
@@ -60,9 +61,11 @@ function Header() {
             >
               <ul className={`uk-list uk-padding-small ${Styles.optionsList}`}>
                 <li>
-                  <button className="uk-button uk-button-link">
-                    My profile
-                  </button>
+                  <Link to="/profile">
+                    <button className="uk-button uk-button-link">
+                      My profile
+                    </button>
+                  </Link>
                 </li>
                 <li>
                   <button
