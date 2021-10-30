@@ -45,11 +45,12 @@
         flex-direction: column;
         transition: max-height var(--transition-time);
         max-height: 10rem;
+        overflow: hidden;
         .optionsList {
           margin: 0;
           display: flex;
           flex-direction: column;
-          align-items: flex-end;
+          align-items: flex-start;
         }
       }
       .hidden {

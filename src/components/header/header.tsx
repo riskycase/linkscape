@@ -7,7 +7,15 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  faHome,
+  faSignOutAlt,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  FunctionWithIcon,
+  LinkWithIcon,
+} from "../actionWithIcon/actionWithIcon";
 
 const provider = new GoogleAuthProvider();
 
@@ -39,7 +47,9 @@ function Header() {
           >
             <div
               className={Styles.userDisplay}
-              onClick={() => setDropdownVisibility(!dropdownVisibility)}
+              onGotPointerCapture={() =>
+                setDropdownVisibility(!dropdownVisibility)
+              }
             >
               <span className={`${Styles.userName}`}>{user?.displayName}</span>
               <img
@@ -59,21 +69,23 @@ function Header() {
                 dropdownVisibility ? "" : Styles.hidden
               }`}
             >
-              <ul className={`uk-list uk-padding-small ${Styles.optionsList}`}>
+              <ul className={`uk-list ${Styles.optionsList}`}>
                 <li>
-                  <Link to="/profile">
-                    <button className="uk-button uk-button-link">
-                      My profile
-                    </button>
-                  </Link>
+                  <LinkWithIcon action="/" icon={faHome} displayText="Home" />
                 </li>
                 <li>
-                  <button
-                    className="uk-button uk-button-text"
-                    onClick={() => signOut(auth)}
-                  >
-                    Logout
-                  </button>
+                  <LinkWithIcon
+                    action="/profile"
+                    icon={faUser}
+                    displayText="My profile"
+                  />
+                </li>
+                <li>
+                  <FunctionWithIcon
+                    action={() => signOut(auth)}
+                    icon={faSignOutAlt}
+                    displayText="Sign out"
+                  />
                 </li>
               </ul>
             </div>
