@@ -2,15 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-
-import Header from "./components/header/header";
-
 // UIKit import
 import "uikit/dist/css/uikit.min.css";
 
+import App from "./App";
+
 ReactDOM.render(
   <React.StrictMode>
-    <Header />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

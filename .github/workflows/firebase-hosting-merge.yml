@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: npm i firebase-tools -g
+      - run: firebase apps:sdkconfig WEB --json --token ${{ secrets.FIREBASE_TOKEN }} > src/.firebase.config.json
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

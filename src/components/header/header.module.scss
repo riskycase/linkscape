@@ -1,4 +1,61 @@
-.navItem {
-  display: flex;
-  justify-content: flex-end;
+.navbar {
+  overflow: hidden;
+  --transition-time: 250ms;
+  --size: 1rem;
+  .navItem {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .signInButton {
+      margin: calc(0.5 * var(--size));
+    }
+    .userContainer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex-direction: column;
+      .userDisplay {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-direction: row;
+        .userName {
+          padding: calc(0.5 * var(--size));
+        }
+        .userImage {
+          height: calc(2 * var(--size));
+          border-radius: 50%;
+        }
+        .dropdown {
+          height: 0;
+          width: 0;
+          transition: transform var(--transition-time);
+          margin: calc(0.5 * var(--size));
+          border-top: calc(0.8 * var(--size)) solid black;
+          border-left: calc(0.5 * var(--size)) solid transparent;
+          border-right: calc(0.5 * var(--size)) solid transparent;
+        }
+        .flip {
+          transform: rotateX(180deg);
+        }
+      }
+      .userOptions {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        transition: max-height var(--transition-time);
+        max-height: 10rem;
+        overflow: hidden;
+        .optionsList {
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+      .hidden {
+        max-height: 0;
+      }
+    }
+  }
 }
