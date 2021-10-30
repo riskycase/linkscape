@@ -36,7 +36,11 @@ function Header() {
             hidden={user === null}
             className={`uk-inline ${Styles.userContainer}`}
           >
-            <div className={Styles.userDisplay}>
+            <div
+              className={Styles.userDisplay}
+              onClick={() => setDropdownVisibility(!dropdownVisibility)}
+            >
+              <span className={`${Styles.userName}`}>{user?.displayName}</span>
               <img
                 src={user?.photoURL || ""}
                 id="userImage"
@@ -47,7 +51,6 @@ function Header() {
                 className={`${Styles.dropdown} ${
                   dropdownVisibility ? Styles.flip : ""
                 }`}
-                onClick={() => setDropdownVisibility(!dropdownVisibility)}
               />
             </div>
             <div
@@ -58,15 +61,12 @@ function Header() {
               <ul className={`uk-list uk-padding-small ${Styles.optionsList}`}>
                 <li>
                   <button className="uk-button uk-button-link">
-                    {user?.displayName}
+                    My profile
                   </button>
                 </li>
                 <li>
-                  <button className="uk-button uk-button-link">My links</button>
-                </li>
-                <li>
                   <button
-                    className="uk-button uk-button-link"
+                    className="uk-button uk-button-text"
                     onClick={() => signOut(auth)}
                   >
                     Logout
