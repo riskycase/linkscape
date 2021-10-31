@@ -11,6 +11,7 @@ import Styles from "./App.module.scss";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, getUserPrivileges } from "./firebase";
 import { useState } from "react";
+import Admin from "./pages/admin/admin";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -35,7 +36,7 @@ function App() {
             {(admin || moderator) && (
               <Route path="/moderator" component={Profile} />
             )}
-            {admin && <Route path="/admin" component={Profile} />}
+            {admin && <Route path="/admin" component={Admin} />}
             <Redirect to="/" />
           </Switch>
         </div>

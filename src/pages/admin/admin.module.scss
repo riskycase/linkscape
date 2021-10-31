@@ -1,0 +1,42 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .backButton {
+    align-self: flex-start;
+    margin: 0.5rem;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    .backIcon,
+    .backText {
+      margin: 0.25rem;
+    }
+  }
+  .headerText {
+    margin: 0.5rem;
+    font-size: 2.25rem;
+    text-align: center;
+    @media screen and (max-width: 425px) {
+      margin: 0.25rem;
+      font-size: 1.5rem;
+    }
+  }
+  .headerSubText {
+    margin: 0.25rem;
+    font-size: 1.25rem;
+    text-align: center;
+    width: fit-content;
+    @media screen and (max-width: 425px) {
+      margin: 0.125rem;
+      font-size: 1.25rem;
+    }
+  }
+  .actionsContainer {
+    display: flex;
+    width: 100%;
+    max-width: 50rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
