@@ -27,12 +27,12 @@ function Header() {
     if (user === null) setDropdownVisibility(false);
   });
   return (
-    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+    <div uk-sticky="animation: uk-animation-fade; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: ; top: 200">
       <nav
-        className={`uk-navbar-container uk-padding-small ${Styles.navbar}`}
+        className={`uk-navbar-container uk-navbar-primary uk-padding-small ${Styles.navbar}`}
         uk-navbar="true"
       >
-        <div className={Styles.navItem}>
+        <div className={`uk-navbar-right ${Styles.navItem}`}>
           <button
             className={`uk-button uk-button-link ${Styles.signInButton}`}
             onClick={() => signInWithRedirect(auth, provider)}
