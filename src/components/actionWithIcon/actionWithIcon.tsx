@@ -16,9 +16,9 @@ function LinkWithIcon({
     <Link to={action} className={Styles.action}>
       <FontAwesomeIcon
         icon={icon}
-        className={`uk-button-link ${Styles.icon}`}
+        className={`uk-button-text ${Styles.icon}`}
       />
-      <button className={`uk-button uk-button-link ${Styles.text}`}>
+      <button className={`uk-button uk-button-text ${Styles.text}`}>
         {displayText}
       </button>
     </Link>
@@ -38,9 +38,9 @@ function FunctionWithIcon({
     <span onClick={() => action()} className={Styles.action}>
       <FontAwesomeIcon
         icon={icon}
-        className={`uk-button-link ${Styles.icon}`}
+        className={`uk-button-text ${Styles.icon}`}
       />
-      <button className={`uk-button uk-button-link ${Styles.text}`}>
+      <button className={`uk-button uk-button-text ${Styles.text}`}>
         {displayText}
       </button>
     </span>

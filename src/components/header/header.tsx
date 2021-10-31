@@ -21,10 +21,8 @@ const provider = new GoogleAuthProvider();
 
 function Header() {
   const [user, setUser] = useState(auth.currentUser);
-  const [dropdownVisibility, setDropdownVisibility] = useState(false);
   onAuthStateChanged(auth, (user) => {
     setUser(user);
-    if (user === null) setDropdownVisibility(false);
   });
   return (
     <div uk-sticky="animation: uk-animation-fade; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: ; top: 200">
@@ -33,63 +31,53 @@ function Header() {
         uk-navbar="true"
       >
         <div className={`uk-navbar-right ${Styles.navItem}`}>
-          <button
-            className={`uk-button uk-button-link ${Styles.signInButton}`}
-            onClick={() => signInWithRedirect(auth, provider)}
-            hidden={user !== null}
-            id="signInButton"
-          >
-            Sign in
-          </button>
-          <div
-            hidden={user === null}
-            className={`uk-inline ${Styles.userContainer}`}
-          >
-            <div
-              className={Styles.userDisplay}
-              onGotPointerCapture={() =>
-                setDropdownVisibility(!dropdownVisibility)
-              }
-            >
-              <span className={`${Styles.userName}`}>{user?.displayName}</span>
-              <img
-                src={user?.photoURL || ""}
-                id="userImage"
-                alt="Signed in"
-                className={Styles.userImage}
-              ></img>
-              <div
-                className={`${Styles.dropdown} ${
-                  dropdownVisibility ? Styles.flip : ""
-                }`}
-              />
-            </div>
-            <div
-              className={`${Styles.userOptions} ${
-                dropdownVisibility ? "" : Styles.hidden
-              }`}
-            >
-              <ul className={`uk-list ${Styles.optionsList}`}>
-                <li>
-                  <LinkWithIcon action="/" icon={faHome} displayText="Home" />
-                </li>
-                <li>
-                  <LinkWithIcon
-                    action="/profile"
-                    icon={faUser}
-                    displayText="My profile"
-                  />
-                </li>
-                <li>
-                  <FunctionWithIcon
-                    action={() => signOut(auth)}
-                    icon={faSignOutAlt}
-                    displayText="Sign out"
-                  />
-                </li>
-              </ul>
-            </div>
-          </div>
+          <ul className="uk-navbar-nav">
+            <li>
+              <button
+                className={`uk-button uk-button-link ${Styles.signInButton}`}
+                onClick={() => signInWithRedirect(auth, provider)}
+                hidden={user !== null}
+                id="signInButton"
+              >
+                Sign in
+              </button>
+            </li>
+            <li hidden={user === null} className={Styles.userContainer}>
+              <a className={Styles.userDisplay}>
+                <span className={`${Styles.userName}`}>
+                  {user?.displayName}
+                </span>
+                <img
+                  src={user?.photoURL || ""}
+                  id="userImage"
+                  alt="Signed in"
+                  className={Styles.userImage}
+                ></img>
+                <div className={Styles.dropdown} />
+              </a>
+              <div className="uk-navbar-dropdown">
+                <ul className={`uk-nav uk-navbar-dropdown-nav`}>
+                  <li>
+                    <LinkWithIcon action="/" icon={faHome} displayText="Home" />
+                  </li>
+                  <li>
+                    <LinkWithIcon
+                      action="/profile"
+                      icon={faUser}
+                      displayText="My profile"
+                    />
+                  </li>
+                  <li>
+                    <FunctionWithIcon
+                      action={() => signOut(auth)}
+                      icon={faSignOutAlt}
+                      displayText="Sign out"
+                    />
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
         </div>
       </nav>
     </div>

@@ -1,5 +1,4 @@
 .navbar {
-  overflow: hidden;
   --transition-time: 250ms;
   --size: 1rem;
   .navItem {
@@ -15,6 +14,7 @@
       align-items: flex-end;
       flex-direction: column;
       .userDisplay {
+        min-height: 0;
         display: flex;
         justify-content: flex-end;
         align-items: center;
@@ -29,14 +29,10 @@
         .dropdown {
           height: 0;
           width: 0;
-          transition: transform var(--transition-time);
           margin: calc(0.5 * var(--size));
           border-top: calc(0.8 * var(--size)) solid black;
           border-left: calc(0.5 * var(--size)) solid transparent;
           border-right: calc(0.5 * var(--size)) solid transparent;
-        }
-        .flip {
-          transform: rotateX(180deg);
         }
       }
       .userOptions {
@@ -46,12 +42,12 @@
         transition: max-height var(--transition-time);
         max-height: 10rem;
         overflow: hidden;
-        .optionsList {
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-        }
+        // .optionsList {
+        //   margin: 0;
+        //   display: flex;
+        //   flex-direction: column;
+        //   align-items: flex-start;
+        // }
       }
       .hidden {
         max-height: 0;
