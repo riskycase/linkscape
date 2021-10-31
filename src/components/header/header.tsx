@@ -60,7 +60,7 @@ function Header({
                 ></img>
                 <div className={Styles.dropdown} />
               </span>
-              <div className="uk-navbar-dropdown">
+              <div className="uk-navbar-dropdown" id="header-dropdown">
                 <ul className={`uk-nav uk-navbar-dropdown-nav`}>
                   <li>
                     <LinkWithIcon action="/" icon={faHome} displayText="Home" />
