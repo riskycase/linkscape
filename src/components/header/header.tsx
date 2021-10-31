@@ -1,16 +1,17 @@
 import Styles from "./header.module.scss";
 import {
   GoogleAuthProvider,
-  onAuthStateChanged,
   signInWithRedirect,
   signOut,
+  User,
 } from "firebase/auth";
 import { auth } from "../../firebase";
-import { useState } from "react";
 import {
+  faCogs,
   faHome,
   faSignOutAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   FunctionWithIcon,
@@ -19,11 +20,15 @@ import {
 
 const provider = new GoogleAuthProvider();
 
-function Header() {
-  const [user, setUser] = useState(auth.currentUser);
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-  });
+function Header({
+  user,
+  admin,
+  moderator,
+}: {
+  user: User | null;
+  admin: boolean;
+  moderator: boolean;
+}) {
   return (
     <div uk-sticky="animation: uk-animation-fade; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: ; top: 200">
       <nav
@@ -43,7 +48,7 @@ function Header() {
               </button>
             </li>
             <li hidden={user === null} className={Styles.userContainer}>
-              <a className={Styles.userDisplay}>
+              <span className={Styles.userDisplay}>
                 <span className={`${Styles.userName}`}>
                   {user?.displayName}
                 </span>
@@ -54,12 +59,13 @@ function Header() {
                   className={Styles.userImage}
                 ></img>
                 <div className={Styles.dropdown} />
-              </a>
+              </span>
               <div className="uk-navbar-dropdown">
                 <ul className={`uk-nav uk-navbar-dropdown-nav`}>
                   <li>
                     <LinkWithIcon action="/" icon={faHome} displayText="Home" />
                   </li>
+                  <li className="uk-nav-divider"></li>
                   <li>
                     <LinkWithIcon
                       action="/profile"
@@ -67,6 +73,28 @@ function Header() {
                       displayText="My profile"
                     />
                   </li>
+                  {(admin || moderator) && (
+                    <>
+                      <li className="uk-nav-divider"></li>
+                      <li>
+                        <LinkWithIcon
+                          action="/moderator"
+                          icon={faUsersCog}
+                          displayText="Moderator page"
+                        />
+                      </li>
+                      {admin && (
+                        <li>
+                          <LinkWithIcon
+                            action="/admin"
+                            icon={faCogs}
+                            displayText="Admin Dashboard"
+                          />
+                        </li>
+                      )}
+                      <li className="uk-nav-divider"></li>
+                    </>
+                  )}
                   <li>
                     <FunctionWithIcon
                       action={() => signOut(auth)}

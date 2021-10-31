@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
-  browserSessionPersistence,
+  browserLocalPersistence,
   getAuth,
   onAuthStateChanged,
   setPersistence,
@@ -47,7 +47,7 @@ const UserConverter: FirestoreDataConverter<User> = {
 // Set up auth
 const auth = getAuth();
 auth.useDeviceLanguage();
-setPersistence(auth, browserSessionPersistence);
+setPersistence(auth, browserLocalPersistence);
 onAuthStateChanged(auth, (user) => {
   if (user !== null) {
     getDoc(doc(firestore, "users", user.uid).withConverter(UserConverter)).then(
@@ -74,4 +74,19 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-export { app, analytics, auth };
+function getUserPrivileges(
+  uid: string
+): Promise<{ admin: boolean; moderator: boolean }> {
+  return new Promise((resolve, reject) => {
+    getDoc(doc(firestore, "users", uid).withConverter(UserConverter))
+      .then((data) => {
+        resolve({
+          admin: data.data()?.admin!!,
+          moderator: data.data()?.moderator!!,
+        });
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+export { app, analytics, auth, getUserPrivileges };
