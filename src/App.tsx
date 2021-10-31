@@ -5,8 +5,8 @@ import {
   Redirect,
 } from "react-router-dom";
 import Header from "./components/header/header";
-import Home from "./pages/home";
-import Profile from "./pages/profile";
+import Home from "./pages/home/home";
+import Profile from "./pages/profile/profile";
 import Styles from "./App.module.scss";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth, getUserPrivileges } from "./firebase";
