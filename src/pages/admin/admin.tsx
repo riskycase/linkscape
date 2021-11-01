@@ -11,6 +11,8 @@ import { useState } from "react";
 import { auth } from "../../firebase";
 import Styles from "./admin.module.scss";
 import ActionCard from "./components/actionCard/actionCard";
+import CoursePanel from "./components/coursePanel/coursePanel";
+import ModeratorPanel from "./components/moderatorPanel/moderatorPanel";
 
 function Admin() {
   const [panel, setPanel] = useState("main");
@@ -50,45 +52,8 @@ function Admin() {
           />
         </div>
       )}
-      {panel === "moderator" && (
-        <div className={Styles.moderatorPanel}>
-          <div className={Styles.buttonGroup}>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            >
-              <FontAwesomeIcon
-                icon={faUserPlus}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Add a moderator</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            >
-              <FontAwesomeIcon icon={faRedo} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Refresh course list</span>
-            </button>
-          </div>
-        </div>
-      )}
-      {panel === "course" && (
-        <div className={Styles.coursePanel}>
-          <div className={Styles.buttonGroup}>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            >
-              <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Add a course</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            >
-              <FontAwesomeIcon icon={faRedo} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Refresh course list</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {panel === "moderator" && <ModeratorPanel />}
+      {panel === "course" && <CoursePanel />}
     </div>
   );
 }

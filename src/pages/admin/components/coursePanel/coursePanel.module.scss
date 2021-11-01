@@ -1,0 +1,23 @@
+.coursePanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .buttonGroup {
+    align-self: flex-end;
+    margin: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    .button {
+      flex: 1 1 auto;
+      margin: 0.2rem;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      .buttonIcon,
+      .buttonText {
+        margin: 0.25rem;
+      }
+    }
+  }
+}
