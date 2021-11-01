@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import Styles from "./actionWithIcon.module.scss";
+import UIkit from "uikit";
 
 function LinkWithIcon({
   action,
@@ -13,12 +14,16 @@ function LinkWithIcon({
   displayText: string;
 }) {
   return (
-    <Link to={action} className={Styles.action}>
+    <Link
+      to={action}
+      className={Styles.action}
+      onClick={() => UIkit.dropdown("#header-dropdown").hide()}
+    >
       <FontAwesomeIcon
         icon={icon}
-        className={`uk-button-link ${Styles.icon}`}
+        className={`uk-button-text ${Styles.icon}`}
       />
-      <button className={`uk-button uk-button-link ${Styles.text}`}>
+      <button className={`uk-button uk-button-text ${Styles.text}`}>
         {displayText}
       </button>
     </Link>
@@ -35,12 +40,18 @@ function FunctionWithIcon({
   displayText: string;
 }) {
   return (
-    <span onClick={() => action()} className={Styles.action}>
+    <span
+      onClick={() => {
+        UIkit.dropdown("#header-dropdown").hide();
+        action();
+      }}
+      className={Styles.action}
+    >
       <FontAwesomeIcon
         icon={icon}
-        className={`uk-button-link ${Styles.icon}`}
+        className={`uk-button-text ${Styles.icon}`}
       />
-      <button className={`uk-button uk-button-link ${Styles.text}`}>
+      <button className={`uk-button uk-button-text ${Styles.text}`}>
         {displayText}
       </button>
     </span>
