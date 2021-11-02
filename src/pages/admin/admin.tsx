@@ -1,9 +1,6 @@
 import {
   faBookReader,
   faChevronLeft,
-  faPlus,
-  faRedo,
-  faUserPlus,
   faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -8,10 +8,13 @@ import {
   setPersistence,
 } from "firebase/auth";
 import {
+  collection,
   doc,
   FirestoreDataConverter,
   getDoc,
+  getDocs,
   getFirestore,
+  query,
   QueryDocumentSnapshot,
   setDoc,
   SnapshotOptions,
@@ -40,6 +43,20 @@ const UserConverter: FirestoreDataConverter<User> = {
       profilePhoto: data.profilePhoto,
       moderator: data.moderator,
       admin: data.admin,
+    };
+  },
+};
+
+const CourseConverter: FirestoreDataConverter<Course> = {
+  toFirestore: (course: WithFieldValue<Course>) => course,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): Course => {
+    const data = snapshot.data(options);
+    return {
+      code: data.code,
+      title: data.title,
     };
   },
 };
@@ -89,4 +106,17 @@ function getUserPrivileges(
   });
 }
 
-export { app, analytics, auth, getUserPrivileges };
+function getAllCourses(): Promise<Array<CourseWithId>> {
+  return new Promise((resolve, reject) => {
+    getDocs(
+      query(collection(firestore, "courses")).withConverter(CourseConverter)
+    )
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({ id: doc.id, course: doc.data() }))
+      )
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+export { app, analytics, auth, getUserPrivileges, getAllCourses };

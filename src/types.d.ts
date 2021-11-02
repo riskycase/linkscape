@@ -27,3 +27,8 @@ interface Course {
   code: string;
   title: string;
 }
+
+interface CourseWithId {
+  id: string;
+  course: Course;
+}
