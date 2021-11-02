@@ -28,7 +28,6 @@ interface Course {
   title: string;
 }
 
-interface CourseWithId {
-  id: string;
-  course: Course;
+interface CourseList {
+  list: Course[];
 }

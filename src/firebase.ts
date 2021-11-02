@@ -8,13 +8,10 @@ import {
   setPersistence,
 } from "firebase/auth";
 import {
-  collection,
   doc,
   FirestoreDataConverter,
   getDoc,
-  getDocs,
   getFirestore,
-  query,
   QueryDocumentSnapshot,
   setDoc,
   SnapshotOptions,
@@ -47,76 +44,58 @@ const UserConverter: FirestoreDataConverter<User> = {
   },
 };
 
-const CourseConverter: FirestoreDataConverter<Course> = {
-  toFirestore: (course: WithFieldValue<Course>) => course,
+const CourseConverter: FirestoreDataConverter<CourseList> = {
+  toFirestore: (courseList: WithFieldValue<CourseList>) => courseList,
   fromFirestore: (
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
-  ): Course => {
+  ): CourseList => {
     const data = snapshot.data(options);
     return {
-      code: data.code,
-      title: data.title,
+      list: data.list,
     };
   },
 };
+
+let userPrivileges: Promise<{ admin: boolean; moderator: boolean }> =
+  Promise.resolve({ admin: false, moderator: false });
 
 // Set up auth
 const auth = getAuth();
 auth.useDeviceLanguage();
 setPersistence(auth, browserLocalPersistence);
 onAuthStateChanged(auth, (user) => {
-  if (user !== null) {
-    getDoc(doc(firestore, "users", user.uid).withConverter(UserConverter)).then(
-      (docData) => {
-        const userData: User = {
-          name: user.displayName!!,
-          emailId: user.email!!,
-          profilePhoto: user.photoURL!!,
-          moderator: false,
-          admin: false,
-        };
-        // Write user data without administrative rights if doesn't exist
-        if (!docData.exists())
-          setDoc(doc(firestore, "users", user.uid), userData);
-        // If exists, preserve administrative data and update if needed
-        else {
-          userData.admin = docData.data().admin;
-          userData.moderator = docData.data().moderator;
-          if (!deepEqual(docData.data(), userData))
-            setDoc(doc(firestore, "users", user.uid), userData);
-        }
-      }
-    );
-  }
+  if (user === null)
+    userPrivileges = Promise.resolve({ admin: false, moderator: false });
+  else
+    userPrivileges = new Promise((resolve, reject) => {
+      const userData: User = {
+        name: user.displayName!!,
+        emailId: user.email!!,
+        profilePhoto: user.photoURL!!,
+        moderator: false,
+        admin: false,
+      };
+      getDoc(
+        doc(firestore, "users", user.uid).withConverter(UserConverter)
+      ).then((snapshot) => {
+        if (snapshot.exists()) {
+          userData.admin = snapshot.data().admin;
+          userData.moderator = snapshot.data().moderator;
+          if (!deepEqual(userData, snapshot.data()))
+            setDoc(doc(firestore, "user", user.uid), userData);
+        } else setDoc(doc(firestore, "user", user.uid), userData);
+        resolve({ admin: userData.admin, moderator: userData.moderator });
+      });
+    });
 });
 
-function getUserPrivileges(
-  uid: string
-): Promise<{ admin: boolean; moderator: boolean }> {
+function getAllCourses(): Promise<Array<Course>> {
   return new Promise((resolve, reject) => {
-    getDoc(doc(firestore, "users", uid).withConverter(UserConverter))
-      .then((data) => {
-        resolve({
-          admin: data.data()?.admin!!,
-          moderator: data.data()?.moderator!!,
-        });
-      })
-      .catch((err) => reject(err));
-  });
-}
-
-function getAllCourses(): Promise<Array<CourseWithId>> {
-  return new Promise((resolve, reject) => {
-    getDocs(
-      query(collection(firestore, "courses")).withConverter(CourseConverter)
-    )
-      .then((snapshot) =>
-        snapshot.docs.map((doc) => ({ id: doc.id, course: doc.data() }))
-      )
-      .then(resolve)
+    getDoc(doc(firestore, "courses", "list").withConverter(CourseConverter))
+      .then((snapshot) => resolve(snapshot.data()?.list!!))
       .catch(reject);
   });
 }
 
-export { app, analytics, auth, getUserPrivileges, getAllCourses };
+export { app, analytics, auth, userPrivileges, getAllCourses };

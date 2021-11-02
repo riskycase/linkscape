@@ -6,7 +6,7 @@ import { getAllCourses } from "../../../../firebase";
 import Styles from "./coursePanel.module.scss";
 
 function CoursePanel() {
-  const [courses, setCourses] = useState<Array<CourseWithId>>([]);
+  const [courses, setCourses] = useState<Array<Course>>([]);
   getAllCourses().then((upstreamCourses) => {
     if (!deepEqual(courses, upstreamCourses)) setCourses(upstreamCourses);
   });
@@ -40,8 +40,8 @@ function CoursePanel() {
             console.log(
               courses.filter(
                 (course) =>
-                  course.course.code.toLowerCase().indexOf(value) + 1 ||
-                  course.course.title.toLowerCase().indexOf(value) + 1
+                  course.code.toLowerCase().indexOf(value) + 1 ||
+                  course.title.toLowerCase().indexOf(value) + 1
               )
             );
           }}
