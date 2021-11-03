@@ -8,13 +8,18 @@ import {
   setPersistence,
 } from "firebase/auth";
 import {
+  collection,
   doc,
   FirestoreDataConverter,
   getDoc,
+  getDocs,
   getFirestore,
+  limit,
+  query,
   QueryDocumentSnapshot,
   setDoc,
   SnapshotOptions,
+  where,
   WithFieldValue,
 } from "firebase/firestore";
 import firebaseConfigFile from "./.firebase.config.json";
@@ -60,6 +65,8 @@ const CourseConverter: FirestoreDataConverter<CourseList> = {
 let userPrivileges: Promise<{ admin: boolean; moderator: boolean }> =
   Promise.resolve({ admin: false, moderator: false });
 
+let moderatorPromise: Promise<Array<User>>;
+
 // Set up auth
 const auth = getAuth();
 auth.useDeviceLanguage();
@@ -89,6 +96,7 @@ onAuthStateChanged(auth, (user) => {
           if (!deepEqual(docData.data(), userData))
             setDoc(doc(firestore, "users", user.uid), userData);
         }
+        if (userData.admin) moderatorPromise = getModerators();
         resolve({ admin: userData.admin, moderator: userData.moderator });
       });
     });
@@ -106,6 +114,48 @@ function getAllCourses(): Promise<Array<Course>> {
   });
 }
 
+function getModerators(): Promise<Array<User>> {
+  return new Promise((resolve, reject) => {
+    getDocs(
+      query(
+        collection(firestore, "users"),
+        where("moderator", "==", true)
+      ).withConverter(UserConverter)
+    )
+      .then((snapshot) => {
+        resolve(snapshot.docs.map((doc) => doc.data()));
+      })
+      .catch(reject);
+  });
+}
+
+function getUserByMail(emailId: string): Promise<User> {
+  return new Promise((resolve, reject) => {
+    getDocs(
+      query(
+        collection(firestore, "users"),
+        where("emailId", "==", emailId),
+        limit(1)
+      ).withConverter(UserConverter)
+    )
+      .then((snapshot) => {
+        if (snapshot.empty) reject("not-exist");
+        else resolve(snapshot.docs[0].data());
+      })
+      .catch(reject);
+  });
+}
+
 let allCourses = getAllCourses();
 
-export { app, analytics, auth, userPrivileges, getAllCourses, allCourses };
+export {
+  app,
+  analytics,
+  auth,
+  userPrivileges,
+  getAllCourses,
+  allCourses,
+  getModerators,
+  moderatorPromise,
+  getUserByMail,
+};

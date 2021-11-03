@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
   .buttonGroup {
     align-self: flex-end;
     margin: 0.5rem;
@@ -17,6 +19,84 @@
       .buttonIcon,
       .buttonText {
         margin: 0.25rem;
+      }
+    }
+  }
+  .moderatorTable {
+    margin: 0;
+    > tbody,
+    thead {
+      > tr {
+        border-bottom: 1px solid #e5e5e5;
+        > td {
+          vertical-align: middle;
+        }
+      }
+    }
+    .moderatorPicture {
+      width: 2rem;
+      border-radius: 50%;
+    }
+  }
+  .searchContainer {
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    border-bottom: 1px solid #5e5e5e;
+    > svg {
+      margin: 0.1rem;
+    }
+    > input {
+      margin: 0.1rem;
+      max-width: 20rem;
+      border: none;
+    }
+  }
+  .searchContainer:focus-within {
+    border: 1px solid #e5e5e5;
+  }
+  .newModeratorPreview {
+    margin: 1rem 0;
+    padding: 0.25rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    .newModeratorPersonalDetails {
+      display: flex;
+      align-items: center;
+      margin: 0.5rem 0;
+      .newModeratorPicture {
+        width: 2rem;
+        flex: 0 0 auto;
+        margin: 0.25rem;
+        border-radius: 50%;
+      }
+      .newModeratorNameEmail {
+        margin: 0.25rem;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    .actionButtonGroup {
+      align-self: flex-end;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin: 0.5rem;
+      .buttonCancel,
+      .buttonConfirm {
+        margin: 0.2rem;
+        display: flex;
+        align-content: center;
+        align-items: center;
+        width: fit-content;
+        .buttonIcon,
+        .buttonText {
+          margin: 0.25rem;
+        }
       }
     }
   }
