@@ -8,18 +8,19 @@ import Header from "./components/header/header";
 import Home from "./pages/home/home";
 import Profile from "./pages/profile/profile";
 import Styles from "./App.module.scss";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth, getUserPrivileges } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, userPrivileges } from "./firebase";
 import { useState } from "react";
+import Admin from "./pages/admin/admin";
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [, setUid] = useState(auth.currentUser?.uid);
   const [admin, setAdmin] = useState(false);
   const [moderator, setModerator] = useState(false);
   onAuthStateChanged(auth, (user) => {
-    setUser(user);
+    setUid(user?.uid);
     if (user !== null)
-      getUserPrivileges(user.uid).then((privileges) => {
+      userPrivileges.then((privileges) => {
         setAdmin(privileges.admin);
         setModerator(privileges.moderator);
       });
@@ -27,7 +28,7 @@ function App() {
   return (
     <div className={Styles.app}>
       <Router>
-        <Header user={user} admin={admin} moderator={moderator} />
+        <Header user={auth.currentUser} admin={admin} moderator={moderator} />
         <div className={Styles.body}>
           <Switch>
             <Route path="/" exact component={Home} />
@@ -35,7 +36,7 @@ function App() {
             {(admin || moderator) && (
               <Route path="/moderator" component={Profile} />
             )}
-            {admin && <Route path="/admin" component={Profile} />}
+            {admin && <Route path="/admin" component={Admin} />}
             <Redirect to="/" />
           </Switch>
         </div>

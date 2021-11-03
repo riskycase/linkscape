@@ -47,6 +47,7 @@ function FunctionWithIcon({
       }}
       className={Styles.action}
     >
+      {" "}
       <FontAwesomeIcon
         icon={icon}
         className={`uk-button-text ${Styles.icon}`}

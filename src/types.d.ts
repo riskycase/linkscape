@@ -27,3 +27,7 @@ interface Course {
   code: string;
   title: string;
 }
+
+interface CourseList {
+  list: Course[];
+}
