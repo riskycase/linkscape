@@ -67,27 +67,32 @@ setPersistence(auth, browserLocalPersistence);
 onAuthStateChanged(auth, (user) => {
   if (user === null)
     userPrivileges = Promise.resolve({ admin: false, moderator: false });
-  else
-    userPrivileges = new Promise((resolve, reject) => {
-      const userData: User = {
-        name: user.displayName!!,
-        emailId: user.email!!,
-        profilePhoto: user.photoURL!!,
-        moderator: false,
-        admin: false,
-      };
+  else {
+    userPrivileges = new Promise((resolve, _reject) => {
       getDoc(
         doc(firestore, "users", user.uid).withConverter(UserConverter)
-      ).then((snapshot) => {
-        if (snapshot.exists()) {
-          userData.admin = snapshot.data().admin;
-          userData.moderator = snapshot.data().moderator;
-          if (!deepEqual(userData, snapshot.data()))
-            setDoc(doc(firestore, "user", user.uid), userData);
-        } else setDoc(doc(firestore, "user", user.uid), userData);
+      ).then((docData) => {
+        const userData: User = {
+          name: user.displayName!!,
+          emailId: user.email!!,
+          profilePhoto: user.photoURL!!,
+          moderator: false,
+          admin: false,
+        };
+        // Write user data without administrative rights if doesn't exist
+        if (!docData.exists())
+          setDoc(doc(firestore, "users", user.uid), userData);
+        // If exists, preserve administrative data and update if needed
+        else {
+          userData.admin = docData.data().admin;
+          userData.moderator = docData.data().moderator;
+          if (!deepEqual(docData.data(), userData))
+            setDoc(doc(firestore, "users", user.uid), userData);
+        }
         resolve({ admin: userData.admin, moderator: userData.moderator });
       });
     });
+  }
 });
 
 function getAllCourses(): Promise<Array<Course>> {
