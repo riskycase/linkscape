@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { allCourses, auth, moderatorPromise } from "../../firebase";
+import { auth } from "../../firebase";
 import Styles from "./admin.module.scss";
 import ActionCard from "./components/actionCard/actionCard";
 import CoursePanel from "./components/coursePanel/coursePanel";
@@ -13,10 +13,6 @@ import ModeratorPanel from "./components/moderatorPanel/moderatorPanel";
 
 function Admin() {
   const [panel, setPanel] = useState("main");
-  const [courseCount, setCourseCount] = useState(0);
-  const [moderatorCount, setModeratorCount] = useState(0);
-  moderatorPromise.then((moderators) => setModeratorCount(moderators.length));
-  allCourses.then((courses) => setCourseCount(courses.length));
   return (
     <div className={Styles.body}>
       {panel !== "main" && (

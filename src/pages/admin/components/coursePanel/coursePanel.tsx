@@ -3,7 +3,6 @@ import {
   faChevronLeft,
   faEdit,
   faPlus,
-  faRedo,
   faSave,
   faSearch,
   faTimes,
