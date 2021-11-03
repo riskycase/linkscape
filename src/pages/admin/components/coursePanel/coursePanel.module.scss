@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin: 1rem;
   .buttonGroup {
     align-self: flex-end;
     margin: 0.5rem;
@@ -36,5 +37,8 @@
   }
   .filterInput:focus-within {
     border: 1px solid #e5e5e5;
+  }
+  .courseTable {
+    flex: 1 1 auto;
   }
 }

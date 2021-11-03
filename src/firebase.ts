@@ -93,9 +93,15 @@ onAuthStateChanged(auth, (user) => {
 function getAllCourses(): Promise<Array<Course>> {
   return new Promise((resolve, reject) => {
     getDoc(doc(firestore, "courses", "list").withConverter(CourseConverter))
-      .then((snapshot) => resolve(snapshot.data()?.list!!))
+      .then((snapshot) => {
+        resolve(snapshot.data()?.list!!);
+        allCourses = Promise.resolve(snapshot.data()?.list!!);
+        console.log("fetch");
+      })
       .catch(reject);
   });
 }
 
-export { app, analytics, auth, userPrivileges, getAllCourses };
+let allCourses = getAllCourses();
+
+export { app, analytics, auth, userPrivileges, getAllCourses, allCourses };

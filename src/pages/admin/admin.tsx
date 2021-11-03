@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { auth } from "../../firebase";
+import { allCourses, auth } from "../../firebase";
 import Styles from "./admin.module.scss";
 import ActionCard from "./components/actionCard/actionCard";
 import CoursePanel from "./components/coursePanel/coursePanel";
@@ -13,6 +13,8 @@ import ModeratorPanel from "./components/moderatorPanel/moderatorPanel";
 
 function Admin() {
   const [panel, setPanel] = useState("main");
+  const [courseCount, setCourseCount] = useState(0);
+  allCourses.then((courses) => setCourseCount(courses.length));
   return (
     <div className={Styles.body}>
       {panel !== "main" && (
@@ -32,8 +34,7 @@ function Admin() {
       <span className={Styles.headerSubText}>
         {panel === "main" && "What would you like to do today?"}
         {panel === "moderator" && "There are currently 4 moderators"}
-        {panel === "course" &&
-          "Course list has 45 courses and was last modified on October 31, 2021 at 10:47 AM"}
+        {panel === "course" && `Course list has ${courseCount} courses`}
       </span>
       {panel === "main" && (
         <div className={Styles.mainPanel}>

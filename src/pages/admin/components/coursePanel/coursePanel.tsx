@@ -2,12 +2,13 @@ import { deepEqual } from "@firebase/util";
 import { faPlus, faRedo, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { getAllCourses } from "../../../../firebase";
+import { allCourses, getAllCourses } from "../../../../firebase";
 import Styles from "./coursePanel.module.scss";
 
 function CoursePanel() {
   const [courses, setCourses] = useState<Array<Course>>([]);
-  getAllCourses().then((upstreamCourses) => {
+  const [filter, setFilter] = useState("");
+  allCourses.then((upstreamCourses) => {
     if (!deepEqual(courses, upstreamCourses)) setCourses(upstreamCourses);
   });
   return (
@@ -34,21 +35,33 @@ function CoursePanel() {
           type="text"
           placeholder="Code or Title"
           id="filterInput"
-          onChange={(event) => {
-            const value = event.target.value.toLowerCase();
-            console.log(value);
-            console.log(
-              courses.filter(
-                (course) =>
-                  course.code.toLowerCase().indexOf(value) + 1 ||
-                  course.title.toLowerCase().indexOf(value) + 1
-              )
-            );
-          }}
+          onChange={(event) => setFilter(event.target.value.toLowerCase())}
         />
       </div>
+      <table className={`uk-table uk-table-divider ${Styles.courseTable}`}>
+        <thead>
+          <tr>
+            <th className="uk-text-nowrap">Course code</th>
+            <th className="uk-width-expand">Title</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map((course, index) => (
+            <tr key={index} hidden={!isCourseInFilter(course, filter)}>
+              <td>{course.code.replaceAll("/", "/ ")}</td>
+              <td className="uk-width-expand">{course.title}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
 export default CoursePanel;
+function isCourseInFilter(course: Course, filter: string) {
+  return (
+    course.code.toLowerCase().indexOf(filter.toLowerCase()) + 1 ||
+    course.title.toLowerCase().indexOf(filter.toLowerCase()) + 1
+  );
+}
