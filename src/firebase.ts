@@ -19,6 +19,7 @@ import {
   QueryDocumentSnapshot,
   setDoc,
   SnapshotOptions,
+  updateDoc,
   where,
   WithFieldValue,
 } from "firebase/firestore";
@@ -65,7 +66,7 @@ const CourseConverter: FirestoreDataConverter<CourseList> = {
 let userPrivileges: Promise<{ admin: boolean; moderator: boolean }> =
   Promise.resolve({ admin: false, moderator: false });
 
-let moderatorPromise: Promise<Array<User>>;
+let moderatorPromise: Promise<Array<{ user: User; uid: string }>>;
 
 // Set up auth
 const auth = getAuth();
@@ -114,7 +115,7 @@ function getAllCourses(): Promise<Array<Course>> {
   });
 }
 
-function getModerators(): Promise<Array<User>> {
+function getModerators(): Promise<Array<{ user: User; uid: string }>> {
   return new Promise((resolve, reject) => {
     getDocs(
       query(
@@ -123,13 +124,15 @@ function getModerators(): Promise<Array<User>> {
       ).withConverter(UserConverter)
     )
       .then((snapshot) => {
-        resolve(snapshot.docs.map((doc) => doc.data()));
+        resolve(
+          snapshot.docs.map((doc) => ({ user: doc.data(), uid: doc.id }))
+        );
       })
       .catch(reject);
   });
 }
 
-function getUserByMail(emailId: string): Promise<User> {
+function getUserByMail(emailId: string): Promise<{ user: User; uid: string }> {
   return new Promise((resolve, reject) => {
     getDocs(
       query(
@@ -140,13 +143,66 @@ function getUserByMail(emailId: string): Promise<User> {
     )
       .then((snapshot) => {
         if (snapshot.empty) reject("not-exist");
-        else resolve(snapshot.docs[0].data());
+        else
+          resolve({ user: snapshot.docs[0].data(), uid: snapshot.docs[0].id });
       })
       .catch(reject);
   });
 }
 
 let allCourses = getAllCourses();
+
+function addNewCourse(course: Course): Promise<void> {
+  return new Promise((resolve, reject) => {
+    allCourses.then((courses) => {
+      courses.push(course);
+      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
+        list: courses,
+      })
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+}
+
+function editCourse(editedCourse: Course, id: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    allCourses.then((courses) => {
+      courses[id] = editedCourse;
+      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
+        list: courses,
+      })
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+}
+
+function deleteCourse(id: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    allCourses.then((courses) => {
+      courses.splice(id, 1);
+      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
+        list: courses,
+      })
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+}
+
+function updateModeratorStatus(uid: string, newStatus: boolean): Promise<void> {
+  return new Promise((resolve, reject) => {
+    updateDoc(doc(firestore, "users", uid).withConverter(UserConverter), {
+      moderator: newStatus,
+    })
+      .then(() => {
+        moderatorPromise = getModerators();
+        resolve();
+      })
+      .catch(reject);
+  });
+}
 
 export {
   app,
@@ -158,4 +214,8 @@ export {
   getModerators,
   moderatorPromise,
   getUserByMail,
+  addNewCourse,
+  editCourse,
+  deleteCourse,
+  updateModeratorStatus,
 };

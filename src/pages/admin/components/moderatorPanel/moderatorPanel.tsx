@@ -14,14 +14,20 @@ import {
   getModerators,
   getUserByMail,
   moderatorPromise,
+  updateModeratorStatus,
 } from "../../../../firebase";
 import Styles from "./moderatorPanel.module.scss";
 
 function ModeratorPanel() {
   const [activeState, setActiveState] = useState("main");
-  const [moderators, setModerators] = useState<User[]>([]);
+  const [moderators, setModerators] = useState<
+    Array<{ user: User; uid: string }>
+  >([]);
   const [email, setEmail] = useState("");
-  const [newModerator, setNewModerator] = useState<User | null>(null);
+  const [newModerator, setNewModerator] = useState<{
+    user: User;
+    uid: string;
+  } | null>(null);
   const [addModeratorState, setAddModeratorState] = useState("none");
   moderatorPromise.then((upstreamModerators) => {
     if (!deepEqual(moderators, upstreamModerators))
@@ -39,9 +45,13 @@ function ModeratorPanel() {
         else setAddModeratorState("error");
       });
   }
-  console.log(newModerator);
   return (
     <div className={Styles.moderatorPanel}>
+      <span>
+        {moderators.length === 1
+          ? "There is currently 1 moderator"
+          : `There are currently ${moderators.length} moderators`}
+      </span>
       <div className={Styles.buttonGroup}>
         {activeState === "main" ? (
           <>
@@ -93,18 +103,26 @@ function ModeratorPanel() {
                 <td>
                   <img
                     className={`uk-preserve-width ${Styles.moderatorPicture}`}
-                    src={moderator.profilePhoto}
-                    alt={moderator.name}
+                    src={moderator.user.profilePhoto}
+                    alt={moderator.user.name}
                   />
                 </td>
-                <td>{moderator.name}</td>
+                <td>{moderator.user.name}</td>
                 <td>
                   <button
                     className={`uk-button uk-button-small uk-button-danger`}
                     onClick={() => {
-                      UIkit.modal.confirm(
-                        `Dismiss ${moderator.name} from the position of moderator?`
-                      );
+                      UIkit.modal
+                        .confirm(
+                          `Dismiss ${moderator.user.name} from the position of moderator?`
+                        )
+                        .then(() => {
+                          updateModeratorStatus(moderator.uid, false).then(
+                            () => {
+                              moderatorPromise.then(setModerators);
+                            }
+                          );
+                        });
                     }}
                   >
                     Dismiss
@@ -142,16 +160,16 @@ function ModeratorPanel() {
           )}
           {newModerator && (
             <div className={Styles.newModeratorPreview}>
-              <span>Make {newModerator.name} a moderator?</span>
+              <span>Make {newModerator.user.name} a moderator?</span>
               <div className={Styles.newModeratorPersonalDetails}>
                 <img
                   className={`uk-preserve-width ${Styles.newModeratorPicture}`}
-                  src={newModerator.profilePhoto}
-                  alt={newModerator.name}
+                  src={newModerator.user.profilePhoto}
+                  alt={newModerator.user.name}
                 />
                 <div className={Styles.newModeratorNameEmail}>
-                  <span>{newModerator.name}</span>
-                  <span>{newModerator.emailId}</span>
+                  <span>{newModerator.user.name}</span>
+                  <span>{newModerator.user.emailId}</span>
                 </div>
               </div>
               <div className={Styles.actionButtonGroup}>
@@ -171,7 +189,13 @@ function ModeratorPanel() {
                 </button>
                 <button
                   className={`uk-button uk-button-primary uk-button-small ${Styles.buttonCancel}`}
-                  onClick={() => {}}
+                  onClick={() => {
+                    updateModeratorStatus(newModerator.uid, true).then(() => {
+                      setActiveState("main");
+                      setAddModeratorState("none");
+                      setNewModerator(null);
+                    });
+                  }}
                 >
                   <FontAwesomeIcon
                     icon={faCheck}

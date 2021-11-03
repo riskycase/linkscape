@@ -29,18 +29,15 @@ function Admin() {
         </button>
       )}
       {panel === "main" && (
-        <span className={Styles.headerText}>
-          Welcome, {auth.currentUser?.displayName}!
-        </span>
+        <>
+          <span className={Styles.headerText}>
+            Welcome, {auth.currentUser?.displayName}!
+          </span>
+          <span className={Styles.headerSubText}>
+            What would you like to do today?
+          </span>
+        </>
       )}
-      <span className={Styles.headerSubText}>
-        {panel === "main" && "What would you like to do today?"}
-        {panel === "moderator" &&
-          (moderatorCount === 1
-            ? "There is currently 1 moderator"
-            : `There are currently ${moderatorCount} moderators`)}
-        {panel === "course" && `Course list has ${courseCount} courses`}
-      </span>
       {panel === "main" && (
         <div className={Styles.mainPanel}>
           <ActionCard
