@@ -101,7 +101,6 @@ function getAllCourses(): Promise<Array<Course>> {
       .then((snapshot) => {
         resolve(snapshot.data()?.list!!);
         allCourses = Promise.resolve(snapshot.data()?.list!!);
-        console.log("fetch");
       })
       .catch(reject);
   });

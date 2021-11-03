@@ -17,7 +17,6 @@ function App() {
   const [, setUid] = useState(auth.currentUser?.uid);
   const [admin, setAdmin] = useState(false);
   const [moderator, setModerator] = useState(false);
-  console.log(admin, moderator);
   onAuthStateChanged(auth, (user) => {
     setUid(user?.uid);
     if (user !== null)

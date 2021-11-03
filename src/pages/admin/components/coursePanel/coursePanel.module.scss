@@ -2,19 +2,39 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 1rem;
+  box-sizing: border-box;
+  padding: 1rem;
   .buttonGroup {
     align-self: flex-end;
-    margin: 0.5rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
+    flex-direction: column;
+    width: 100%;
     .button {
-      flex: 1 1 auto;
       margin: 0.2rem;
       display: flex;
       align-content: center;
       align-items: center;
+      .buttonIcon,
+      .buttonText {
+        margin: 0.25rem;
+      }
+    }
+  }
+  .actionButtonGroup {
+    align-self: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin: 0.5rem;
+    .buttonCancel,
+    .buttonConfirm {
+      margin: 0.2rem;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      width: fit-content;
       .buttonIcon,
       .buttonText {
         margin: 0.25rem;
@@ -40,5 +60,6 @@
   }
   .courseTable {
     flex: 1 1 auto;
+    margin: 0;
   }
 }
