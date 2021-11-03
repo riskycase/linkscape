@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 1;
   .backButton {
     align-self: flex-start;
     margin: 0.5rem;
