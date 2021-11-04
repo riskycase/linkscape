@@ -23,7 +23,7 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
-import { getDatabase, push, ref, set } from "firebase/database";
+import { get, getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
 
@@ -217,6 +217,25 @@ function addNewLink(link: LinkObject): Promise<void> {
   );
 }
 
+function getLinksForCourse(
+  code: string
+): Promise<Array<{ id: string; link: LinkObject }>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `links/${code.replaceAll("/", "?")}`))
+      .then((snapshot) => {
+        const linksArray: Array<{ id: string; link: LinkObject }> = [];
+        snapshot.forEach((link) => {
+          linksArray.push({
+            id: link.key!!,
+            link: link.toJSON() as LinkObject,
+          });
+        });
+        resolve(linksArray);
+      })
+      .catch(reject);
+  });
+}
+
 export {
   app,
   analytics,
@@ -232,4 +251,5 @@ export {
   deleteCourse,
   updateModeratorStatus,
   addNewLink,
+  getLinksForCourse,
 };

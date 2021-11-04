@@ -1,0 +1,80 @@
+.linksPage {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  .backButton {
+    margin: 0.2rem;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    .buttonIcon,
+    .buttonText {
+      margin: 0.25rem;
+    }
+  }
+  .filterInput {
+    margin: 0.5rem;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    .filterIcon {
+      margin: 0.1rem;
+    }
+    .filterTextBox {
+      margin: 0.1rem;
+      max-width: 20rem;
+      border: none;
+    }
+  }
+  .filterInput:focus-within {
+    border: 1px solid #e5e5e5;
+  }
+  .courseTable {
+    flex: 1 1 auto;
+    margin: 0;
+  }
+  .coursePanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .button {
+      margin: 0.2rem;
+      display: flex;
+      align-content: center;
+      align-items: center;
+      align-self: flex-end;
+      .buttonIcon,
+      .buttonText {
+        margin: 0.25rem;
+      }
+    }
+    .subHeading {
+      font-size: 1.25rem;
+    }
+  }
+  .linksList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .linkDiv {
+      margin: 0.5rem 0;
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      > a,
+      span {
+        margin: 0.1rem 0;
+      }
+      > a > div {
+        max-lines: 3;
+      }
+      > span {
+        align-self: flex-end;
+      }
+    }
+  }
+}
