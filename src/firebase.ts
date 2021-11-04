@@ -23,6 +23,7 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
+import { getDatabase, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
 
@@ -32,6 +33,7 @@ const analytics = getAnalytics(app);
 
 // Set up firestore
 const firestore = getFirestore();
+const realtime = getDatabase();
 
 const UserConverter: FirestoreDataConverter<User> = {
   toFirestore: (user: WithFieldValue<User>) => user,
@@ -94,6 +96,7 @@ onAuthStateChanged(auth, (user) => {
         else {
           userData.admin = docData.data().admin;
           userData.moderator = docData.data().moderator;
+          set(ref(realtime, `users/${user.uid}/moderator`), userData.moderator);
           if (!deepEqual(docData.data(), userData))
             setDoc(doc(firestore, "users", user.uid), userData);
         }

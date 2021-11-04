@@ -10,16 +10,17 @@ interface User {
 }
 
 // Link document
-interface Link {
+interface LinkObject {
   title: string;
-  description: ?string;
   link: string;
-  type: string;
   course: string;
+  owner: { uid: string; name: string };
   reports: {
-    reason: string;
-    reportedBy: string;
-  }[];
+    [key: string]: {
+      reason: string;
+      reportedBy: string;
+    };
+  };
 }
 
 // Course document
