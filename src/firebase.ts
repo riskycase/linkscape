@@ -23,7 +23,7 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
 
@@ -207,6 +207,16 @@ function updateModeratorStatus(uid: string, newStatus: boolean): Promise<void> {
   });
 }
 
+function addNewLink(link: LinkObject): Promise<void> {
+  const linkRef = push(
+    ref(realtime, `links/${link.course.replaceAll("/", "?")}`)
+  );
+  const userLinkRef = push(ref(realtime, `users/${link.owner.uid}/links`));
+  return set(linkRef, link).then(() =>
+    set(userLinkRef, `${link.course}/${linkRef.key}`)
+  );
+}
+
 export {
   app,
   analytics,
@@ -221,4 +231,5 @@ export {
   editCourse,
   deleteCourse,
   updateModeratorStatus,
+  addNewLink,
 };

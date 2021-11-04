@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { allCourses, auth } from "../../firebase";
+import { addNewLink, allCourses, auth } from "../../firebase";
 import Styles from "./addLinks.module.scss";
 
 function isCourseInFilter(course: Course, filter: string) {
@@ -153,8 +153,7 @@ function AddLink() {
               <button
                 className={`uk-button uk-button-primary uk-button-small ${Styles.buttonCancel}`}
                 onClick={() => {
-                  console.log(link);
-                  setTimeout(() => {
+                  addNewLink(link).then(() => {
                     selectCourse(-1);
                     setFilter("");
                     setLink({
@@ -167,7 +166,7 @@ function AddLink() {
                       course: "",
                       reports: {},
                     });
-                  }, 3000);
+                  });
                 }}
               >
                 <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
