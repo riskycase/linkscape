@@ -32,3 +32,11 @@ interface Course {
 interface CourseList {
   list: Course[];
 }
+
+// User details
+interface UserDetails {
+  name: string;
+  profilePhoto: string;
+  moderator: boolean;
+  links: string[];
+}

@@ -215,7 +215,7 @@ function addNewLink(link: LinkObject): Promise<void> {
   );
   const userLinkRef = push(ref(realtime, `users/${link.owner.uid}/links`));
   return set(linkRef, link).then(() =>
-    set(userLinkRef, `${link.course}/${linkRef.key}`)
+    set(userLinkRef, `${link.course.replaceAll("/", "?")}/${linkRef.key}`)
   );
 }
 
@@ -265,6 +265,28 @@ function reportLink(
   });
 }
 
+function getUserInfo(uid: string): Promise<UserDetails> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `users/${uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const links: string[] = [];
+          let data: UserDetails = snapshot.toJSON() as UserDetails;
+          snapshot.child("links").forEach((link) => {
+            links.push(JSON.stringify(link.toJSON()));
+          });
+          resolve({
+            name: data.name,
+            profilePhoto: data.profilePhoto,
+            moderator: data.moderator,
+            links,
+          });
+        } else reject();
+      })
+      .catch(reject);
+  });
+}
+
 export {
   app,
   analytics,
@@ -282,4 +304,5 @@ export {
   addNewLink,
   getLinksForCourse,
   reportLink,
+  getUserInfo,
 };
