@@ -14,13 +14,12 @@ import { useState } from "react";
 import Admin from "./pages/admin/admin";
 import AddLink from "./pages/addLink/addLink";
 import Links from "./pages/links/links";
+import Moderator from "./pages/moderator/moderator";
 
 function App() {
-  const [, setUid] = useState(auth.currentUser?.uid);
   const [admin, setAdmin] = useState(false);
   const [moderator, setModerator] = useState(false);
   onAuthStateChanged(auth, (user) => {
-    setUid(user?.uid);
     if (user !== null)
       userPrivileges.then((privileges) => {
         setAdmin(privileges.admin);
@@ -38,7 +37,7 @@ function App() {
             <Route path="/links" component={Links} />
             {auth.currentUser && <Route path="/add" component={AddLink} />}
             {(admin || moderator) && (
-              <Route path="/moderator" component={Profile} />
+              <Route path="/moderator" component={Moderator} />
             )}
             {admin && <Route path="/admin" component={Admin} />}
             <Redirect to="/" />

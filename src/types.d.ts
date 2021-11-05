@@ -40,3 +40,10 @@ interface UserDetails {
   moderator: boolean;
   links: string[];
 }
+
+// Flagged link convenience object
+interface FlaggedLink {
+  linkId: string;
+  reports: { uid: string; reason: string }[];
+  link: LinkObject;
+}

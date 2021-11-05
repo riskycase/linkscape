@@ -213,9 +213,17 @@ function addNewLink(link: LinkObject): Promise<void> {
   const linkRef = push(
     ref(realtime, `links/${link.course.replaceAll("/", "?")}`)
   );
-  const userLinkRef = push(ref(realtime, `users/${link.owner.uid}/links`));
   return set(linkRef, link).then(() =>
-    set(userLinkRef, `${link.course.replaceAll("/", "?")}/${linkRef.key}`)
+    set(
+      ref(
+        realtime,
+        `users/${auth.currentUser?.uid}/links/${link.course.replaceAll(
+          "/",
+          "?"
+        )}!${linkRef.key}`
+      ),
+      true
+    )
   );
 }
 
@@ -257,7 +265,7 @@ function reportLink(
             `reports/${link.link.course.replaceAll("/", "?")}!${link.id}/${auth
               .currentUser?.uid!!}`
           ),
-          { reason }
+          reason
         )
           .then(resolve)
           .catch(reject);
@@ -273,7 +281,7 @@ function getUserInfo(uid: string): Promise<UserDetails> {
           const links: string[] = [];
           let data: UserDetails = snapshot.toJSON() as UserDetails;
           snapshot.child("links").forEach((link) => {
-            links.push(JSON.stringify(link.toJSON()));
+            links.push(link.key?.replace("!", "/")!!);
           });
           resolve({
             name: data.name,
@@ -285,6 +293,53 @@ function getUserInfo(uid: string): Promise<UserDetails> {
       })
       .catch(reject);
   });
+}
+
+function getFlaggedLinks(): Promise<Array<FlaggedLink>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, "reports"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const flaggedLinks: Promise<FlaggedLink>[] = [];
+          snapshot.forEach((link) => {
+            flaggedLinks.push(
+              new Promise((resolve, reject) => {
+                const reports: { uid: string; reason: string }[] = [];
+                link.forEach((report) => {
+                  reports.push({ uid: report.key!!, reason: report.val() });
+                });
+                const linkId = link.key?.replace("!", "/")!!;
+                get(ref(realtime, `links/${linkId}`)).then((link) =>
+                  resolve({
+                    linkId,
+                    reports,
+                    link: link.toJSON() as LinkObject,
+                  })
+                );
+              })
+            );
+          });
+          Promise.all(flaggedLinks).then(resolve).catch(reject);
+        } else resolve([]);
+      })
+      .catch(reject);
+  });
+}
+
+function deleteReports(id: string): Promise<void> {
+  return set(ref(realtime, `reports/${id.replace("/", "!")}`), null);
+}
+
+function deleteLink(linkId: string, userId: string): Promise<void> {
+  console.log(linkId);
+  return deleteReports(linkId)
+    .then(() => set(ref(realtime, `links/${linkId}`), null))
+    .then(() =>
+      set(
+        ref(realtime, `users/${userId}/links/${linkId.replace("/", "!")}`),
+        null
+      )
+    );
 }
 
 export {
@@ -305,4 +360,7 @@ export {
   getLinksForCourse,
   reportLink,
   getUserInfo,
+  getFlaggedLinks,
+  deleteReports,
+  deleteLink,
 };
