@@ -34,16 +34,19 @@ function AddLink() {
   allCourses.then(setCourses);
   return (
     <div className={Styles.addLinkPage}>
-      <Link to="/">
-        <button
-          className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className={Styles.buttonIcon} />
-          <span className={Styles.buttonText}>Back to home</span>
-        </button>
-      </Link>
       {selectedCourse === -1 ? (
         <>
+          <Link to="/">
+            <button
+              className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={Styles.buttonIcon}
+              />
+              <span className={Styles.buttonText}>Back to home</span>
+            </button>
+          </Link>
           <div className={`uk-inline ${Styles.filterInput}`}>
             <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
             <input
@@ -91,6 +94,26 @@ function AddLink() {
       ) : (
         <>
           <div className={Styles.addLinkPanel}>
+            <button
+              className={`uk-button uk-button-danger uk-button-small ${Styles.buttonCancel}`}
+              onClick={() => {
+                selectCourse(-1);
+                setFilter("");
+                setLink({
+                  link: "",
+                  title: "",
+                  owner: {
+                    uid: auth.currentUser!!.uid,
+                    name: auth.currentUser!!.displayName!!,
+                  },
+                  course: "",
+                  reports: {},
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faTimes} className={Styles.buttonIcon} />
+              <span className={Styles.buttonText}>Cancel</span>
+            </button>
             <span className={Styles.subHeading}>
               Adding a link for {courses[selectedCourse].code} -{" "}
               {courses[selectedCourse].title}
@@ -129,10 +152,10 @@ function AddLink() {
                 }}
               />
             </div>
-            <div className={Styles.buttonGroup}>
-              <button
-                className={`uk-button uk-button-danger uk-button-small ${Styles.buttonCancel}`}
-                onClick={() => {
+            <button
+              className={`uk-button uk-button-primary uk-button-small ${Styles.buttonAdd}`}
+              onClick={() => {
+                addNewLink(link).then(() => {
                   selectCourse(-1);
                   setFilter("");
                   setLink({
@@ -145,34 +168,12 @@ function AddLink() {
                     course: "",
                     reports: {},
                   });
-                }}
-              >
-                <FontAwesomeIcon icon={faTimes} className={Styles.buttonIcon} />
-                <span className={Styles.buttonText}>Cancel</span>
-              </button>
-              <button
-                className={`uk-button uk-button-primary uk-button-small ${Styles.buttonCancel}`}
-                onClick={() => {
-                  addNewLink(link).then(() => {
-                    selectCourse(-1);
-                    setFilter("");
-                    setLink({
-                      link: "",
-                      title: "",
-                      owner: {
-                        uid: auth.currentUser!!.uid,
-                        name: auth.currentUser!!.displayName!!,
-                      },
-                      course: "",
-                      reports: {},
-                    });
-                  });
-                }}
-              >
-                <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
-                <span className={Styles.buttonText}>Add</span>
-              </button>
-            </div>
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
+              <span className={Styles.buttonText}>Add</span>
+            </button>
             <div className={Styles.linkPreview}>
               <span className={Styles.previewHeading}>Link preview:</span>
               {link.link === "" ? (

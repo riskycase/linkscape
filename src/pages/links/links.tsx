@@ -33,16 +33,19 @@ function Links() {
   allCourses.then(setCourses);
   return (
     <div className={Styles.linksPage}>
-      <Link to="/">
-        <button
-          className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className={Styles.buttonIcon} />
-          <span className={Styles.buttonText}>Back to home</span>
-        </button>
-      </Link>
       {selectedCourse === -1 ? (
         <>
+          <Link to="/">
+            <button
+              className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={Styles.buttonIcon}
+              />
+              <span className={Styles.buttonText}>Back to home</span>
+            </button>
+          </Link>
           <div className={`uk-inline ${Styles.filterInput}`}>
             <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
             <input

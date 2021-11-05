@@ -65,7 +65,6 @@ function Header({
                   <li>
                     <LinkWithIcon action="/" icon={faHome} displayText="Home" />
                   </li>
-                  <li className="uk-nav-divider"></li>
                   <li>
                     <LinkWithIcon
                       action="/profile"
@@ -92,9 +91,9 @@ function Header({
                           />
                         </li>
                       )}
-                      <li className="uk-nav-divider"></li>
                     </>
                   )}
+                  <li className="uk-nav-divider"></li>
                   <li>
                     <FunctionWithIcon
                       action={() => signOut(auth)}

@@ -42,23 +42,22 @@
     .subHeading {
       font-size: 1.25rem;
     }
-    .buttonGroup {
+    .buttonAdd {
       align-self: flex-end;
+      margin: 1rem;
+    }
+    .buttonCancel {
+      align-self: flex-start;
+    }
+    .buttonAdd,
+    .buttonCancel {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      margin: 0.5rem;
-      .buttonCancel,
-      .buttonConfirm {
-        margin: 0.2rem;
-        display: flex;
-        align-content: center;
-        align-items: center;
-        width: fit-content;
-        .buttonIcon,
-        .buttonText {
-          margin: 0.25rem;
-        }
+      align-content: center;
+      align-items: center;
+      width: fit-content;
+      .buttonIcon,
+      .buttonText {
+        margin: 0.25rem;
       }
     }
   }
