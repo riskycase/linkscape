@@ -1,8 +1,15 @@
-import { faChevronLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faExternalLinkAlt,
+  faFlag,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { allCourses, getLinksForCourse } from "../../firebase";
+import UIkit from "uikit";
+import { allCourses, getLinksForCourse, reportLink } from "../../firebase";
 import Styles from "./links.module.scss";
 
 function isCourseInFilter(course: Course, filter: string) {
@@ -19,8 +26,11 @@ function Links() {
   const [courseLinks, setCourseLinks] = useState<
     Array<{ id: string; link: LinkObject }>
   >([]);
+  const [activeLink, setActiveLink] = useState<{
+    id: string;
+    link: LinkObject;
+  } | null>(null);
   allCourses.then(setCourses);
-  console.log(courseLinks);
   return (
     <div className={Styles.linksPage}>
       <Link to="/">
@@ -68,6 +78,70 @@ function Links() {
             </tbody>
           </table>
         </>
+      ) : activeLink ? (
+        <div className={Styles.linkPanel}>
+          <button
+            className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
+            onClick={() => {
+              setActiveLink(null);
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faChevronLeft}
+              className={Styles.buttonIcon}
+            />
+            <span className={Styles.buttonText}>Course page</span>
+          </button>
+          <div className={Styles.keyValue}>
+            <span className={Styles.key}>Title</span>
+            <span className={`uk-text-break ${Styles.value}`}>
+              {activeLink.link.title}
+            </span>
+          </div>
+          <div className={Styles.keyValue}>
+            <span className={Styles.key}>Link</span>
+            <span className={`uk-text-break ${Styles.value}`}>
+              {activeLink.link.link}
+            </span>
+          </div>
+          <div className={Styles.keyValue}>
+            <span className={Styles.key}>Shared by</span>
+            <span className={`uk-text-break ${Styles.value}`}>
+              <Link to={`/profile?uid=${activeLink.link.owner.uid}`}>
+                {activeLink.link.owner.name}
+              </Link>
+            </span>
+          </div>
+          <div className={Styles.buttonGroup}>
+            <button
+              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
+              onClick={() => {
+                UIkit.modal
+                  .prompt("Enter reason for reporting", "")
+                  .then((reason) => reportLink(activeLink, reason || ""))
+                  .then(() => console.log("fone"))
+                  .catch(console.error);
+              }}
+            >
+              <FontAwesomeIcon icon={faFlag} className={Styles.buttonIcon} />
+              <span className={Styles.buttonText}>Report</span>
+            </button>
+            <button
+              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
+              onClick={() => {
+                let link = activeLink.link.link;
+                if (!link.startsWith("http")) link = "http://" + link;
+                window.open(link, "_blank");
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faExternalLinkAlt}
+                className={Styles.buttonIcon}
+              />
+              <span className={Styles.buttonText}>Open</span>
+            </button>
+          </div>
+        </div>
       ) : (
         <div className={Styles.coursePanel}>
           <button
@@ -90,18 +164,15 @@ function Links() {
           {courseLinks.length ? (
             <div className={Styles.linksList}>
               {courseLinks.map((courseLink) => (
-                <div className={Styles.linkDiv} key={courseLink.id}>
-                  <a href={courseLink.link.link} className={Styles.owner}>
-                    <div className="uk-panel uk-text-wrap uk-text-break">
-                      {courseLink.link.title}
-                    </div>
-                  </a>
-                  <span className={Styles.owner}>
-                    shared by{" "}
-                    <Link to={`/profile/${courseLink.link.owner.uid}`}>
-                      {courseLink.link.owner.name}
-                    </Link>
-                  </span>
+                <div
+                  className={Styles.linkDiv}
+                  key={courseLink.id}
+                  onClick={() => setActiveLink(courseLink)}
+                >
+                  <div className="uk-panel uk-text-wrap uk-text-break">
+                    {courseLink.link.title}
+                  </div>
+                  <FontAwesomeIcon icon={faChevronRight} />
                 </div>
               ))}
             </div>

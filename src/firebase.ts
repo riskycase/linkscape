@@ -236,6 +236,33 @@ function getLinksForCourse(
   });
 }
 
+function reportLink(
+  link: { id: string; link: LinkObject },
+  reason: string
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const courseRef = ref(
+      realtime,
+      `reports/${link.link.course.replaceAll("/", "?")}!${link.id}`
+    );
+    get(courseRef).then((snapshot) => {
+      if (snapshot.hasChild(auth.currentUser?.uid!!))
+        reject("already-reported");
+      else
+        set(
+          ref(
+            realtime,
+            `reports/${link.link.course.replaceAll("/", "?")}!${link.id}/${auth
+              .currentUser?.uid!!}`
+          ),
+          { reason }
+        )
+          .then(resolve)
+          .catch(reject);
+    });
+  });
+}
+
 export {
   app,
   analytics,
@@ -252,4 +279,5 @@ export {
   updateModeratorStatus,
   addNewLink,
   getLinksForCourse,
+  reportLink,
 };
