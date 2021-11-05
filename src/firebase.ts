@@ -79,6 +79,8 @@ onAuthStateChanged(auth, (user) => {
     userPrivileges = Promise.resolve({ admin: false, moderator: false });
   else {
     userPrivileges = new Promise((resolve, _reject) => {
+      set(ref(realtime, `users/${user.uid}/name`), user.displayName);
+      set(ref(realtime, `users/${user.uid}/profilePhoto`), user.photoURL);
       getDoc(
         doc(firestore, "users", user.uid).withConverter(UserConverter)
       ).then((docData) => {

@@ -119,8 +119,19 @@ function Links() {
                 UIkit.modal
                   .prompt("Enter reason for reporting", "")
                   .then((reason) => reportLink(activeLink, reason || ""))
-                  .then(() => console.log("fone"))
-                  .catch(console.error);
+                  .then(() =>
+                    UIkit.notification({
+                      message: "Reported successfully",
+                      status: "success",
+                    })
+                  )
+                  .catch((reason) => {
+                    if (reason === "already-reported")
+                      UIkit.notification({
+                        message: "You have already reported this link",
+                        status: "danger",
+                      });
+                  });
               }}
             >
               <FontAwesomeIcon icon={faFlag} className={Styles.buttonIcon} />
