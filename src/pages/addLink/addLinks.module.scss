@@ -15,27 +15,6 @@
       margin: 0.25rem;
     }
   }
-  .filterInput {
-    margin: 0.5rem;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    .filterIcon {
-      margin: 0.1rem;
-    }
-    .filterTextBox {
-      margin: 0.1rem;
-      max-width: 20rem;
-      border: none;
-    }
-  }
-  .filterInput:focus-within {
-    border: 1px solid #e5e5e5;
-  }
-  .courseTable {
-    flex: 1 1 auto;
-    margin: 0;
-  }
   .addLinkPanel {
     display: flex;
     flex-direction: column;

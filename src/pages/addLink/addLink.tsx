@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import CourseTable from "../../components/courseTable/courseTable";
 import { addNewLink, allCourses, auth } from "../../firebase";
 import Styles from "./addLinks.module.scss";
 
@@ -47,49 +48,7 @@ function AddLink() {
               <span className={Styles.buttonText}>Back to home</span>
             </button>
           </Link>
-          <div className={`uk-inline ${Styles.filterInput}`}>
-            <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
-            <input
-              className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
-              type="text"
-              placeholder="Code or Title"
-              id="filterInput"
-              value={filter}
-              onChange={(event) => setFilter(event.target.value)}
-            />
-          </div>
-          <table className={`uk-table uk-table-divider ${Styles.courseTable}`}>
-            <thead>
-              <tr>
-                <th className="uk-text-nowrap">Course code</th>
-                <th className="uk-width-expand">Title</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course, index) => (
-                <tr
-                  key={index}
-                  hidden={!isCourseInFilter(course, filter)}
-                  onClick={() => {
-                    selectCourse(index);
-                    setLink({
-                      link: "",
-                      title: "",
-                      owner: {
-                        uid: auth.currentUser!!.uid,
-                        name: auth.currentUser!!.displayName!!,
-                      },
-                      course: courses[index].code,
-                      reports: {},
-                    });
-                  }}
-                >
-                  <td>{course.code.replaceAll("/", "/ ")}</td>
-                  <td className="uk-width-expand">{course.title}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <CourseTable courses={courses} setIndex={selectCourse} />
         </>
       ) : (
         <>
@@ -129,7 +88,7 @@ function AddLink() {
                     link: link.link,
                     title: event.target.value,
                     owner: link.owner,
-                    course: link.course,
+                    course: courses[selectedCourse].code,
                     reports: link.reports,
                   });
                 }}
@@ -146,7 +105,7 @@ function AddLink() {
                     link: event.target.value,
                     title: link.title,
                     owner: link.owner,
-                    course: link.course,
+                    course: courses[selectedCourse].code,
                     reports: link.reports,
                   });
                 }}
@@ -176,7 +135,7 @@ function AddLink() {
             </button>
             <div className={Styles.linkPreview}>
               <span className={Styles.previewHeading}>Link preview:</span>
-              {link.link === "" ? (
+              {link.link === "" || link.title === "" ? (
                 <span className="uk-text-muted">Enter a link first!</span>
               ) : (
                 <div className={Styles.linkDiv}>

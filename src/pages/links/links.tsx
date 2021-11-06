@@ -1,3 +1,4 @@
+import { deepEqual } from "@firebase/util";
 import {
   faChevronLeft,
   faChevronRight,
@@ -9,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import UIkit from "uikit";
+import CourseTable from "../../components/courseTable/courseTable";
 import { allCourses, getLinksForCourse, reportLink } from "../../firebase";
 import Styles from "./links.module.scss";
 
@@ -22,7 +24,6 @@ function isCourseInFilter(course: Course, filter: string) {
 function Links() {
   const [selectedCourse, selectCourse] = useState(-1);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [filter, setFilter] = useState("");
   const [courseLinks, setCourseLinks] = useState<
     Array<{ id: string; link: LinkObject }>
   >([]);
@@ -31,6 +32,10 @@ function Links() {
     link: LinkObject;
   } | null>(null);
   allCourses.then(setCourses);
+  if (selectedCourse !== -1)
+    getLinksForCourse(courses[selectedCourse].code).then((upstreamLinks) => {
+      if (!deepEqual(upstreamLinks, courseLinks)) setCourseLinks(upstreamLinks);
+    });
   return (
     <div className={Styles.linksPage}>
       {selectedCourse === -1 ? (
@@ -46,40 +51,7 @@ function Links() {
               <span className={Styles.buttonText}>Back to home</span>
             </button>
           </Link>
-          <div className={`uk-inline ${Styles.filterInput}`}>
-            <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
-            <input
-              className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
-              type="text"
-              placeholder="Code or Title"
-              id="filterInput"
-              value={filter}
-              onChange={(event) => setFilter(event.target.value)}
-            />
-          </div>
-          <table className={`uk-table uk-table-divider ${Styles.courseTable}`}>
-            <thead>
-              <tr>
-                <th className="uk-text-nowrap">Course code</th>
-                <th className="uk-width-expand">Title</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course, index) => (
-                <tr
-                  key={index}
-                  hidden={!isCourseInFilter(course, filter)}
-                  onClick={() => {
-                    selectCourse(index);
-                    getLinksForCourse(courses[index].code).then(setCourseLinks);
-                  }}
-                >
-                  <td>{course.code.replaceAll("/", "/ ")}</td>
-                  <td className="uk-width-expand">{course.title}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <CourseTable courses={courses} setIndex={selectCourse} />
         </>
       ) : activeLink ? (
         <div className={Styles.linkPanel}>
