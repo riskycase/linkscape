@@ -40,6 +40,19 @@
       }
     }
   }
+  .linksList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .linkDiv {
+      margin: 0.5rem 0;
+      display: flex;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
   .shareButton {
     transform: scale(0.75);
     transform-origin: left;

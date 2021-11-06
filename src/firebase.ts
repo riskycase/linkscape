@@ -431,7 +431,6 @@ function deleteReports(id: string): Promise<void> {
 }
 
 function deleteLink(linkId: string, userId: string): Promise<void> {
-  console.log(linkId);
   return deleteReports(linkId)
     .then(() => set(ref(realtime, `links/${linkId}`), null))
     .then(() =>
@@ -440,6 +439,29 @@ function deleteLink(linkId: string, userId: string): Promise<void> {
         null
       )
     );
+}
+
+function getUserLinks(uid: string): Promise<Array<LinkWithKey>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `users/${uid}/links`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const links: Promise<LinkWithKey>[] = [];
+          snapshot.forEach((linkRef) => {
+            links.push(
+              get(
+                ref(realtime, `links/${linkRef.key?.replace("!", "/")}`)
+              ).then((link) => ({
+                id: linkRef.key?.replace("!", "/")!!,
+                link: link.toJSON() as LinkObject,
+              }))
+            );
+          });
+          Promise.all(links).then(resolve).catch(reject);
+        } else resolve([]);
+      })
+      .catch(reject);
+  });
 }
 
 export {
@@ -463,4 +485,5 @@ export {
   getFlaggedLinks,
   deleteReports,
   deleteLink,
+  getUserLinks,
 };

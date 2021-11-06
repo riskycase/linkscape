@@ -1,22 +1,37 @@
-import { faHome, faShare } from "@fortawesome/free-solid-svg-icons";
+import { deepEqual } from "@firebase/util";
+import {
+  faChevronDown,
+  faChevronUp,
+  faHome,
+  faShare,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import UIkit from "uikit";
 import {
   ActionButton,
   LinkButton,
 } from "../../components/buttonWithIcon/buttonWithIcon";
-import { auth, getUserInfo } from "../../firebase";
+import LinkDiv from "../../components/linkDiv/linkDiv";
+import { auth, getUserInfo, getUserLinks } from "../../firebase";
 import Styles from "./profile.module.scss";
 
 function Profile() {
   let URLObject = new URL(window.location.href);
   const [userInfo, setUserInfo] = useState<UserDetails | null>(null);
+  const [userLinks, setUserLinks] = useState<Array<LinkWithKey>>([]);
+  const [selectedLink, setSelectedLink] = useState(-1);
   const uid = URLObject.searchParams.has("uid")
     ? URLObject.searchParams.get("uid")!!
     : auth.currentUser?.uid;
   getUserInfo(uid!!)
     .then((upstreamUserInfo) => {
       if (!userInfo) setUserInfo(upstreamUserInfo);
+    })
+    .then(() => {
+      getUserLinks(uid!!).then((upstreamLinks) => {
+        if (!deepEqual(upstreamLinks, userLinks)) setUserLinks(upstreamLinks);
+      });
     })
     .catch(() => setUserInfo(null));
   return (
@@ -60,6 +75,24 @@ function Profile() {
             Shared {userInfo.links.length} link
             {userInfo.links.length === 1 ? "" : "s"} till now
           </span>
+          <div className={Styles.linksList}>
+            {userLinks.map((userLink, index) => (
+              <div className={Styles.linkContainer}>
+                <div className={Styles.linkDiv} key={userLink.id}>
+                  <div className="uk-panel uk-text-wrap uk-text-break">
+                    {userLink.link.course}:{userLink.link.title}
+                  </div>
+                  <FontAwesomeIcon
+                    icon={selectedLink === index ? faChevronUp : faChevronDown}
+                    onClick={() =>
+                      setSelectedLink(selectedLink === index ? -1 : index)
+                    }
+                  />
+                </div>
+                {selectedLink === index && <LinkDiv link={userLink} />}
+              </div>
+            ))}
+          </div>
         </>
       ) : (
         URLObject.searchParams.has("uid") && (
