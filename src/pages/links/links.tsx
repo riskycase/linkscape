@@ -8,13 +8,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import UIkit from "uikit";
 import {
   ActionButton,
   LinkButton,
 } from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
+import LinkDiv from "../../components/linkDiv/linkDiv";
 import {
   allCourses,
   auth,
@@ -26,9 +26,7 @@ import Styles from "./links.module.scss";
 function Links() {
   const [selectedCourse, selectCourse] = useState(-1);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [courseLinks, setCourseLinks] = useState<
-    Array<{ id: string; link: LinkObject }>
-  >([]);
+  const [courseLinks, setCourseLinks] = useState<Array<LinkWithKey>>([]);
   const [activeLink, setActiveLink] = useState<{
     id: string;
     link: LinkObject;
@@ -52,26 +50,7 @@ function Links() {
             icon={faChevronLeft}
             text="Course page"
           />
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Title</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              {activeLink.link.title}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Link</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              {activeLink.link.link}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Shared by</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              <Link to={`/profile?uid=${activeLink.link.owner.uid}`}>
-                {activeLink.link.owner.name}
-              </Link>
-            </span>
-          </div>
+          <LinkDiv link={activeLink} />
           <div className={Styles.buttonGroup}>
             {auth.currentUser && (
               <ActionButton

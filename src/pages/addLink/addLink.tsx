@@ -1,11 +1,11 @@
 import { faHome, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   ActionButton,
   LinkButton,
 } from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
+import LinkDiv from "../../components/linkDiv/linkDiv";
 import { addNewLink, allCourses, auth } from "../../firebase";
 import Styles from "./addLinks.module.scss";
 
@@ -114,19 +114,7 @@ function AddLink() {
               {link.link === "" || link.title === "" ? (
                 <span className="uk-text-muted">Enter a link first!</span>
               ) : (
-                <div className={Styles.linkDiv}>
-                  <a href={link.link} className={Styles.owner}>
-                    <div className="uk-panel uk-text-wrap uk-text-break">
-                      {link.title}
-                    </div>
-                  </a>
-                  <span className={Styles.owner}>
-                    shared by{" "}
-                    <Link to={`/profile/${link.owner.uid}`}>
-                      {link.owner.name}
-                    </Link>
-                  </span>
-                </div>
+                <LinkDiv link={{ id: "", link }} />
               )}
             </div>
           </div>

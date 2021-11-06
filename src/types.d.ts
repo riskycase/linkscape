@@ -47,3 +47,9 @@ interface FlaggedLink {
   reports: { uid: string; reason: string }[];
   link: LinkObject;
 }
+
+// Link object with  key
+interface LinkWithKey {
+  id: string;
+  link: LinkObject;
+}

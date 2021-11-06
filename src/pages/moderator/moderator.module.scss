@@ -40,7 +40,8 @@
     .buttonGroup {
       display: flex;
       align-self: flex-end;
-      margin: 0.25rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
     }
   }
 }

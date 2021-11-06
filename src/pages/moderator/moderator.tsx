@@ -8,13 +8,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepEqual } from "@firebase/util";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { deleteLink, deleteReports, getFlaggedLinks } from "../../firebase";
 import Styles from "./moderator.module.scss";
 import {
   ActionButton,
   LinkButton,
 } from "../../components/buttonWithIcon/buttonWithIcon";
+import LinkDiv from "../../components/linkDiv/linkDiv";
 
 function Moderator() {
   const [activeLink, setActiveLink] = useState(-1);
@@ -49,26 +49,12 @@ function Moderator() {
             icon={faChevronLeft}
             text="Reports list"
           />
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Title</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              {links[activeLink].link.title}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Link</span>
-            <span className={`uk-text-truncate ${Styles.value}`}>
-              {links[activeLink].link.link}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Shared by</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              <Link to={`/profile?uid=${links[activeLink].link.owner.uid}`}>
-                {links[activeLink].link.owner.name}
-              </Link>
-            </span>
-          </div>
+          <LinkDiv
+            link={{
+              id: links[activeLink].linkId,
+              link: links[activeLink].link,
+            }}
+          />
           <div className={Styles.buttonGroup}>
             <ActionButton
               action={() => {
