@@ -173,10 +173,94 @@ function addNewCourse(course: Course): Promise<void> {
 function editCourse(editedCourse: Course, id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     allCourses.then((courses) => {
+      const oldCourse = courses[id];
+      const oldLinks = getLinksForCourse(oldCourse.code);
       courses[id] = editedCourse;
-      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
-        list: courses,
-      })
+      oldLinks
+        .then((links) =>
+          links.map((link) => {
+            let newLink = link;
+            newLink.link.course = editedCourse.code;
+            return newLink;
+          })
+        )
+        .then((newLinks) =>
+          newLinks.map((newLink) =>
+            set(
+              ref(
+                realtime,
+                `links/${editedCourse.code.replaceAll("/", "?")}/${newLink.id}`
+              ),
+              newLink.link
+            )
+          )
+        )
+        .then(() =>
+          oldLinks.then((links) =>
+            links.map((link) =>
+              set(
+                ref(
+                  realtime,
+                  `users/${
+                    link.link.owner.uid
+                  }/links/${editedCourse.code.replaceAll("/", "!")}!${link.id}`
+                ),
+                true
+              )
+            )
+          )
+        )
+        .then(() => oldLinks.then((links) => links.map((link) => link.id)))
+        .then((idList) =>
+          idList.map((id) =>
+            get(
+              ref(
+                realtime,
+                `reports/${oldCourse.code.replaceAll("/", "?")}!${id}`
+              )
+            )
+          )
+        )
+        .then((reports) =>
+          reports.map((report) =>
+            report.then((report) =>
+              set(
+                ref(
+                  realtime,
+                  `reports/${editedCourse.code.replaceAll(
+                    "/",
+                    "?"
+                  )}!${report.key?.substring(report.key.indexOf("!") + 1)}`
+                ),
+                report.toJSON()
+              )
+            )
+          )
+        )
+        .then(() =>
+          oldLinks.then((links) =>
+            links.map((link) =>
+              deleteLink(
+                `${oldCourse.code.replaceAll("/", "?")}!${link.id}`,
+                link.link.owner.uid
+              )
+            )
+          )
+        )
+        .then(() =>
+          set(
+            ref(realtime, `links/${oldCourse.code.replaceAll("/", "?")}`),
+            null
+          )
+        )
+        .then(() =>
+          setDoc(
+            doc(firestore, "courses", "list").withConverter(CourseConverter),
+            {
+              list: courses,
+            }
+          )
+        )
         .then(resolve)
         .catch(reject);
     });
@@ -186,10 +270,31 @@ function editCourse(editedCourse: Course, id: number): Promise<void> {
 function deleteCourse(id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     allCourses.then((courses) => {
-      courses.splice(id, 1);
-      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
-        list: courses,
-      })
+      const oldCourse = courses[id];
+      getLinksForCourse(oldCourse.code)
+        .then((links) =>
+          links.map((link) =>
+            deleteLink(
+              `${oldCourse.code.replaceAll("/", "?")}!${link.id}`,
+              link.link.owner.uid
+            )
+          )
+        )
+        .then(() =>
+          set(
+            ref(realtime, `links/${oldCourse.code.replaceAll("/", "!")}`),
+            null
+          )
+        )
+        .then(() => {
+          courses.splice(id, 1);
+          setDoc(
+            doc(firestore, "courses", "list").withConverter(CourseConverter),
+            {
+              list: courses,
+            }
+          );
+        })
         .then(resolve)
         .catch(reject);
     });
@@ -309,13 +414,15 @@ function getFlaggedLinks(): Promise<Array<FlaggedLink>> {
                   reports.push({ uid: report.key!!, reason: report.val() });
                 });
                 const linkId = link.key?.replace("!", "/")!!;
-                get(ref(realtime, `links/${linkId}`)).then((link) =>
-                  resolve({
-                    linkId,
-                    reports,
-                    link: link.toJSON() as LinkObject,
-                  })
-                );
+                get(ref(realtime, `links/${linkId}`))
+                  .then((link) =>
+                    resolve({
+                      linkId,
+                      reports,
+                      link: link.toJSON() as LinkObject,
+                    })
+                  )
+                  .catch(reject);
               })
             );
           });
