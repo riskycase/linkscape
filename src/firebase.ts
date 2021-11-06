@@ -18,11 +18,10 @@ import {
   query,
   QueryDocumentSnapshot,
   setDoc,
-  SnapshotOptions,
   updateDoc,
   where,
   WithFieldValue,
-} from "firebase/firestore";
+} from "firebase/firestore/lite";
 import { get, getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
@@ -37,11 +36,8 @@ const realtime = getDatabase();
 
 const UserConverter: FirestoreDataConverter<User> = {
   toFirestore: (user: WithFieldValue<User>) => user,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): User => {
-    const data = snapshot.data(options);
+  fromFirestore: (snapshot: QueryDocumentSnapshot): User => {
+    const data = snapshot.data();
     return {
       name: data.name,
       emailId: data.emailId,
@@ -54,11 +50,8 @@ const UserConverter: FirestoreDataConverter<User> = {
 
 const CourseConverter: FirestoreDataConverter<CourseList> = {
   toFirestore: (courseList: WithFieldValue<CourseList>) => courseList,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): CourseList => {
-    const data = snapshot.data(options);
+  fromFirestore: (snapshot: QueryDocumentSnapshot): CourseList => {
+    const data = snapshot.data();
     return {
       list: data.list,
     };

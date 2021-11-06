@@ -27,10 +27,7 @@ function Links() {
   const [selectedCourse, selectCourse] = useState(-1);
   const [courses, setCourses] = useState<Course[]>([]);
   const [courseLinks, setCourseLinks] = useState<Array<LinkWithKey>>([]);
-  const [activeLink, setActiveLink] = useState<{
-    id: string;
-    link: LinkObject;
-  } | null>(null);
+  const [activeLink, setActiveLink] = useState<LinkWithKey | null>(null);
   allCourses.then(setCourses);
   if (selectedCourse !== -1)
     getLinksForCourse(courses[selectedCourse].code).then((upstreamLinks) => {

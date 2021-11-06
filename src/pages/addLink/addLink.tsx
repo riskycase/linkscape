@@ -20,7 +20,6 @@ function AddLink() {
       name: auth.currentUser!!.displayName!!,
     },
     course: "",
-    reports: {},
   });
   allCourses.then(setCourses);
   return (
@@ -44,7 +43,6 @@ function AddLink() {
                     name: auth.currentUser!!.displayName!!,
                   },
                   course: "",
-                  reports: {},
                 });
               }}
               icon={faTimes}
@@ -66,7 +64,6 @@ function AddLink() {
                     title: event.target.value,
                     owner: link.owner,
                     course: courses[selectedCourse].code,
-                    reports: link.reports,
                   });
                 }}
               />
@@ -83,7 +80,6 @@ function AddLink() {
                     title: link.title,
                     owner: link.owner,
                     course: courses[selectedCourse].code,
-                    reports: link.reports,
                   });
                 }}
               />
@@ -101,7 +97,6 @@ function AddLink() {
                         name: auth.currentUser!!.displayName!!,
                       },
                       course: "",
-                      reports: {},
                     });
                   });
                 }}
