@@ -23,6 +23,7 @@ import {
   where,
   WithFieldValue,
 } from "firebase/firestore";
+import { get, getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
 
@@ -32,6 +33,7 @@ const analytics = getAnalytics(app);
 
 // Set up firestore
 const firestore = getFirestore();
+const realtime = getDatabase();
 
 const UserConverter: FirestoreDataConverter<User> = {
   toFirestore: (user: WithFieldValue<User>) => user,
@@ -77,6 +79,8 @@ onAuthStateChanged(auth, (user) => {
     userPrivileges = Promise.resolve({ admin: false, moderator: false });
   else {
     userPrivileges = new Promise((resolve, _reject) => {
+      set(ref(realtime, `users/${user.uid}/name`), user.displayName);
+      set(ref(realtime, `users/${user.uid}/profilePhoto`), user.photoURL);
       getDoc(
         doc(firestore, "users", user.uid).withConverter(UserConverter)
       ).then((docData) => {
@@ -94,6 +98,7 @@ onAuthStateChanged(auth, (user) => {
         else {
           userData.admin = docData.data().admin;
           userData.moderator = docData.data().moderator;
+          set(ref(realtime, `users/${user.uid}/moderator`), userData.moderator);
           if (!deepEqual(docData.data(), userData))
             setDoc(doc(firestore, "users", user.uid), userData);
         }
@@ -168,10 +173,94 @@ function addNewCourse(course: Course): Promise<void> {
 function editCourse(editedCourse: Course, id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     allCourses.then((courses) => {
+      const oldCourse = courses[id];
+      const oldLinks = getLinksForCourse(oldCourse.code);
       courses[id] = editedCourse;
-      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
-        list: courses,
-      })
+      oldLinks
+        .then((links) =>
+          links.map((link) => {
+            let newLink = link;
+            newLink.link.course = editedCourse.code;
+            return newLink;
+          })
+        )
+        .then((newLinks) =>
+          newLinks.map((newLink) =>
+            set(
+              ref(
+                realtime,
+                `links/${editedCourse.code.replaceAll("/", "?")}/${newLink.id}`
+              ),
+              newLink.link
+            )
+          )
+        )
+        .then(() =>
+          oldLinks.then((links) =>
+            links.map((link) =>
+              set(
+                ref(
+                  realtime,
+                  `users/${
+                    link.link.owner.uid
+                  }/links/${editedCourse.code.replaceAll("/", "!")}!${link.id}`
+                ),
+                true
+              )
+            )
+          )
+        )
+        .then(() => oldLinks.then((links) => links.map((link) => link.id)))
+        .then((idList) =>
+          idList.map((id) =>
+            get(
+              ref(
+                realtime,
+                `reports/${oldCourse.code.replaceAll("/", "?")}!${id}`
+              )
+            )
+          )
+        )
+        .then((reports) =>
+          reports.map((report) =>
+            report.then((report) =>
+              set(
+                ref(
+                  realtime,
+                  `reports/${editedCourse.code.replaceAll(
+                    "/",
+                    "?"
+                  )}!${report.key?.substring(report.key.indexOf("!") + 1)}`
+                ),
+                report.toJSON()
+              )
+            )
+          )
+        )
+        .then(() =>
+          oldLinks.then((links) =>
+            links.map((link) =>
+              deleteLink(
+                `${oldCourse.code.replaceAll("/", "?")}!${link.id}`,
+                link.link.owner.uid
+              )
+            )
+          )
+        )
+        .then(() =>
+          set(
+            ref(realtime, `links/${oldCourse.code.replaceAll("/", "?")}`),
+            null
+          )
+        )
+        .then(() =>
+          setDoc(
+            doc(firestore, "courses", "list").withConverter(CourseConverter),
+            {
+              list: courses,
+            }
+          )
+        )
         .then(resolve)
         .catch(reject);
     });
@@ -181,10 +270,31 @@ function editCourse(editedCourse: Course, id: number): Promise<void> {
 function deleteCourse(id: number): Promise<void> {
   return new Promise((resolve, reject) => {
     allCourses.then((courses) => {
-      courses.splice(id, 1);
-      setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
-        list: courses,
-      })
+      const oldCourse = courses[id];
+      getLinksForCourse(oldCourse.code)
+        .then((links) =>
+          links.map((link) =>
+            deleteLink(
+              `${oldCourse.code.replaceAll("/", "?")}!${link.id}`,
+              link.link.owner.uid
+            )
+          )
+        )
+        .then(() =>
+          set(
+            ref(realtime, `links/${oldCourse.code.replaceAll("/", "!")}`),
+            null
+          )
+        )
+        .then(() => {
+          courses.splice(id, 1);
+          setDoc(
+            doc(firestore, "courses", "list").withConverter(CourseConverter),
+            {
+              list: courses,
+            }
+          );
+        })
         .then(resolve)
         .catch(reject);
     });
@@ -204,6 +314,141 @@ function updateModeratorStatus(uid: string, newStatus: boolean): Promise<void> {
   });
 }
 
+function addNewLink(link: LinkObject): Promise<void> {
+  const linkRef = push(
+    ref(realtime, `links/${link.course.replaceAll("/", "?")}`)
+  );
+  return set(linkRef, link).then(() =>
+    set(
+      ref(
+        realtime,
+        `users/${auth.currentUser?.uid}/links/${link.course.replaceAll(
+          "/",
+          "?"
+        )}!${linkRef.key}`
+      ),
+      true
+    )
+  );
+}
+
+function getLinksForCourse(
+  code: string
+): Promise<Array<{ id: string; link: LinkObject }>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `links/${code.replaceAll("/", "?")}`))
+      .then((snapshot) => {
+        const linksArray: Array<{ id: string; link: LinkObject }> = [];
+        snapshot.forEach((link) => {
+          linksArray.push({
+            id: link.key!!,
+            link: link.toJSON() as LinkObject,
+          });
+        });
+        resolve(linksArray);
+      })
+      .catch(reject);
+  });
+}
+
+function reportLink(
+  link: { id: string; link: LinkObject },
+  reason: string
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const courseRef = ref(
+      realtime,
+      `reports/${link.link.course.replaceAll("/", "?")}!${link.id}`
+    );
+    get(courseRef).then((snapshot) => {
+      if (snapshot.hasChild(auth.currentUser?.uid!!))
+        reject("already-reported");
+      else
+        set(
+          ref(
+            realtime,
+            `reports/${link.link.course.replaceAll("/", "?")}!${link.id}/${auth
+              .currentUser?.uid!!}`
+          ),
+          reason
+        )
+          .then(resolve)
+          .catch(reject);
+    });
+  });
+}
+
+function getUserInfo(uid: string): Promise<UserDetails> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `users/${uid}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const links: string[] = [];
+          let data: UserDetails = snapshot.toJSON() as UserDetails;
+          snapshot.child("links").forEach((link) => {
+            links.push(link.key?.replace("!", "/")!!);
+          });
+          resolve({
+            name: data.name,
+            profilePhoto: data.profilePhoto,
+            moderator: data.moderator,
+            links,
+          });
+        } else reject();
+      })
+      .catch(reject);
+  });
+}
+
+function getFlaggedLinks(): Promise<Array<FlaggedLink>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, "reports"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const flaggedLinks: Promise<FlaggedLink>[] = [];
+          snapshot.forEach((link) => {
+            flaggedLinks.push(
+              new Promise((resolve, reject) => {
+                const reports: { uid: string; reason: string }[] = [];
+                link.forEach((report) => {
+                  reports.push({ uid: report.key!!, reason: report.val() });
+                });
+                const linkId = link.key?.replace("!", "/")!!;
+                get(ref(realtime, `links/${linkId}`))
+                  .then((link) =>
+                    resolve({
+                      linkId,
+                      reports,
+                      link: link.toJSON() as LinkObject,
+                    })
+                  )
+                  .catch(reject);
+              })
+            );
+          });
+          Promise.all(flaggedLinks).then(resolve).catch(reject);
+        } else resolve([]);
+      })
+      .catch(reject);
+  });
+}
+
+function deleteReports(id: string): Promise<void> {
+  return set(ref(realtime, `reports/${id.replace("/", "!")}`), null);
+}
+
+function deleteLink(linkId: string, userId: string): Promise<void> {
+  console.log(linkId);
+  return deleteReports(linkId)
+    .then(() => set(ref(realtime, `links/${linkId}`), null))
+    .then(() =>
+      set(
+        ref(realtime, `users/${userId}/links/${linkId.replace("/", "!")}`),
+        null
+      )
+    );
+}
+
 export {
   app,
   analytics,
@@ -218,4 +463,11 @@ export {
   editCourse,
   deleteCourse,
   updateModeratorStatus,
+  addNewLink,
+  getLinksForCourse,
+  reportLink,
+  getUserInfo,
+  getFlaggedLinks,
+  deleteReports,
+  deleteLink,
 };

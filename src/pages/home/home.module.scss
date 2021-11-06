@@ -1,0 +1,19 @@
+.homeContainer {
+  padding: 1rem;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  .homeHeading {
+    text-align: center;
+    font-size: 1.25rem;
+  }
+  .buttonGroup {
+    margin: 1rem 0;
+    display: flex;
+    > a > button {
+      margin: 0.25rem;
+    }
+  }
+}

@@ -10,16 +10,17 @@ interface User {
 }
 
 // Link document
-interface Link {
+interface LinkObject {
   title: string;
-  description: ?string;
   link: string;
-  type: string;
   course: string;
+  owner: { uid: string; name: string };
   reports: {
-    reason: string;
-    reportedBy: string;
-  }[];
+    [key: string]: {
+      reason: string;
+      reportedBy: string;
+    };
+  };
 }
 
 // Course document
@@ -30,4 +31,19 @@ interface Course {
 
 interface CourseList {
   list: Course[];
+}
+
+// User details
+interface UserDetails {
+  name: string;
+  profilePhoto: string;
+  moderator: boolean;
+  links: string[];
+}
+
+// Flagged link convenience object
+interface FlaggedLink {
+  linkId: string;
+  reports: { uid: string; reason: string }[];
+  link: LinkObject;
 }
