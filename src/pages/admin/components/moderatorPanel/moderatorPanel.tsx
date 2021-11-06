@@ -10,6 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import UIkit from "uikit";
+import { ActionButton } from "../../../../components/buttonWithIcon/buttonWithIcon";
 import {
   getModerators,
   getUserByMail,
@@ -55,37 +56,23 @@ function ModeratorPanel() {
       <div className={Styles.buttonGroup}>
         {activeState === "main" ? (
           <>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("add")}
-            >
-              <FontAwesomeIcon
-                icon={faUserPlus}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Add a moderator</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => getModerators().then(setModerators)}
-            >
-              <FontAwesomeIcon icon={faRedo} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Refresh moderator list</span>
-            </button>
+            <ActionButton
+              action={() => setActiveState("add")}
+              icon={faUserPlus}
+              text="Add a moderator"
+            />
+            <ActionButton
+              action={() => getModerators().then(setModerators)}
+              icon={faRedo}
+              text="Refresh list"
+            />
           </>
         ) : (
-          <>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("main")}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Back to moderator panel</span>
-            </button>
-          </>
+          <ActionButton
+            action={() => setActiveState("main")}
+            icon={faChevronLeft}
+            text="Moderator list"
+          />
         )}
       </div>
       {activeState === "main" ? (
@@ -173,36 +160,26 @@ function ModeratorPanel() {
                 </div>
               </div>
               <div className={Styles.actionButtonGroup}>
-                <button
-                  className={`uk-button uk-button-danger uk-button-small ${Styles.buttonCancel}`}
-                  onClick={() => {
+                <ActionButton
+                  action={() => {
                     setActiveState("main");
                     setAddModeratorState("none");
                     setNewModerator(null);
                   }}
-                >
-                  <FontAwesomeIcon
-                    icon={faTimes}
-                    className={Styles.buttonIcon}
-                  />
-                  <span className={Styles.buttonText}>Cancel</span>
-                </button>
-                <button
-                  className={`uk-button uk-button-primary uk-button-small ${Styles.buttonCancel}`}
-                  onClick={() => {
+                  icon={faTimes}
+                  text="Cancel"
+                />
+                <ActionButton
+                  action={() => {
                     updateModeratorStatus(newModerator.uid, true).then(() => {
                       setActiveState("main");
                       setAddModeratorState("none");
                       setNewModerator(null);
                     });
                   }}
-                >
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className={Styles.buttonIcon}
-                  />
-                  <span className={Styles.buttonText}>Yes</span>
-                </button>
+                  icon={faCheck}
+                  text="Yes"
+                />
               </div>
             </div>
           )}

@@ -4,22 +4,19 @@ import {
   faChevronRight,
   faExternalLinkAlt,
   faFlag,
-  faSearch,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import UIkit from "uikit";
+import {
+  ActionButton,
+  LinkButton,
+} from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
 import { allCourses, getLinksForCourse, reportLink } from "../../firebase";
 import Styles from "./links.module.scss";
-
-function isCourseInFilter(course: Course, filter: string) {
-  return (
-    course.code.toLowerCase().indexOf(filter.toLowerCase()) + 1 ||
-    course.title.toLowerCase().indexOf(filter.toLowerCase()) + 1
-  );
-}
 
 function Links() {
   const [selectedCourse, selectCourse] = useState(-1);
@@ -40,33 +37,16 @@ function Links() {
     <div className={Styles.linksPage}>
       {selectedCourse === -1 ? (
         <>
-          <Link to="/">
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Back to home</span>
-            </button>
-          </Link>
+          <LinkButton link="/" icon={faHome} text="Home" />
           <CourseTable courses={courses} setIndex={selectCourse} />
         </>
       ) : activeLink ? (
         <div className={Styles.linkPanel}>
-          <button
-            className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            onClick={() => {
-              setActiveLink(null);
-            }}
-          >
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              className={Styles.buttonIcon}
-            />
-            <span className={Styles.buttonText}>Course page</span>
-          </button>
+          <ActionButton
+            action={() => setActiveLink(null)}
+            icon={faChevronLeft}
+            text="Course page"
+          />
           <div className={Styles.keyValue}>
             <span className={Styles.key}>Title</span>
             <span className={`uk-text-break ${Styles.value}`}>
@@ -88,9 +68,8 @@ function Links() {
             </span>
           </div>
           <div className={Styles.buttonGroup}>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => {
+            <ActionButton
+              action={() => {
                 UIkit.modal
                   .prompt("Enter reason for reporting", "")
                   .then((reason) => reportLink(activeLink, reason || ""))
@@ -108,41 +87,30 @@ function Links() {
                       });
                   });
               }}
-            >
-              <FontAwesomeIcon icon={faFlag} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Report</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => {
+              icon={faFlag}
+              text="Report"
+            />
+            <ActionButton
+              action={() => {
                 let link = activeLink.link.link;
                 if (!link.startsWith("http")) link = "http://" + link;
                 window.open(link, "_blank");
               }}
-            >
-              <FontAwesomeIcon
-                icon={faExternalLinkAlt}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Open</span>
-            </button>
+              icon={faExternalLinkAlt}
+              text="Open"
+            />
           </div>
         </div>
       ) : (
         <div className={Styles.coursePanel}>
-          <button
-            className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-            onClick={() => {
+          <ActionButton
+            action={() => {
               selectCourse(-1);
               setCourseLinks([]);
             }}
-          >
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              className={Styles.buttonIcon}
-            />
-            <span className={Styles.buttonText}>Select a different course</span>
-          </button>
+            icon={faChevronLeft}
+            text="Select a different course"
+          />
           <span className={Styles.subHeading}>
             Viewing links for {courses[selectedCourse].code} -{" "}
             {courses[selectedCourse].title}

@@ -4,13 +4,13 @@ import {
   faEdit,
   faPlus,
   faSave,
-  faSearch,
   faTimes,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import UIkit from "uikit";
+import { ActionButton } from "../../../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../../../components/courseTable/courseTable";
 import {
   addNewCourse,
@@ -40,27 +40,21 @@ function CoursePanel() {
       <div className={Styles.buttonGroup}>
         {activeState === "main" ? (
           <>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("add")}
-            >
-              <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Add a course</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("edit")}
-            >
-              <FontAwesomeIcon icon={faEdit} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Edit a course</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("delete")}
-            >
-              <FontAwesomeIcon icon={faTrash} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Delete a course</span>
-            </button>
+            <ActionButton
+              action={() => setActiveState("add")}
+              icon={faPlus}
+              text="Add a course"
+            />
+            <ActionButton
+              action={() => setActiveState("edit")}
+              icon={faEdit}
+              text="Edit a course"
+            />
+            <ActionButton
+              action={() => setActiveState("delete")}
+              icon={faTrash}
+              text="Delete a course"
+            />
           </>
         ) : (
           <button
@@ -274,9 +268,3 @@ function CoursePanel() {
 }
 
 export default CoursePanel;
-function isCourseInFilter(course: Course, filter: string) {
-  return (
-    course.code.toLowerCase().indexOf(filter.toLowerCase()) + 1 ||
-    course.title.toLowerCase().indexOf(filter.toLowerCase()) + 1
-  );
-}

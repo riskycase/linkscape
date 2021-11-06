@@ -1,24 +1,16 @@
 .body {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   flex-grow: 1;
   width: 100%;
-  .backButton {
-    align-self: flex-start;
+  .buttonGroup {
     margin: 0.5rem;
-    display: flex;
-    align-content: center;
-    align-items: center;
-    .backIcon,
-    .backText {
-      margin: 0.25rem;
-    }
   }
   .headerText {
     margin: 0.5rem;
     font-size: 2.25rem;
-    text-align: center;
+    align-self: center;
     @media screen and (max-width: 425px) {
       margin: 0.25rem;
       font-size: 1.5rem;
@@ -27,7 +19,7 @@
   .headerSubText {
     margin: 0.25rem;
     font-size: 1.25rem;
-    text-align: center;
+    align-self: center;
     width: fit-content;
     @media screen and (max-width: 425px) {
       margin: 0.125rem;
@@ -40,5 +32,6 @@
     max-width: 50rem;
     flex-wrap: wrap;
     justify-content: center;
+    align-self: center;
   }
 }

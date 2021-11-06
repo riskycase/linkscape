@@ -1,27 +1,17 @@
-import {
-  faChevronLeft,
-  faPlus,
-  faSearch,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  ActionButton,
+  LinkButton,
+} from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
 import { addNewLink, allCourses, auth } from "../../firebase";
 import Styles from "./addLinks.module.scss";
 
-function isCourseInFilter(course: Course, filter: string) {
-  return (
-    course.code.toLowerCase().indexOf(filter.toLowerCase()) + 1 ||
-    course.title.toLowerCase().indexOf(filter.toLowerCase()) + 1
-  );
-}
-
 function AddLink() {
   const [selectedCourse, selectCourse] = useState(-1);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [filter, setFilter] = useState("");
   const [link, setLink] = useState<LinkObject>({
     link: "",
     title: "",
@@ -37,27 +27,15 @@ function AddLink() {
     <div className={Styles.addLinkPage}>
       {selectedCourse === -1 ? (
         <>
-          <Link to="/">
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Back to home</span>
-            </button>
-          </Link>
+          <LinkButton link="/" icon={faHome} text="Home" />
           <CourseTable courses={courses} setIndex={selectCourse} />
         </>
       ) : (
         <>
           <div className={Styles.addLinkPanel}>
-            <button
-              className={`uk-button uk-button-danger uk-button-small ${Styles.buttonCancel}`}
-              onClick={() => {
+            <ActionButton
+              action={() => {
                 selectCourse(-1);
-                setFilter("");
                 setLink({
                   link: "",
                   title: "",
@@ -69,10 +47,9 @@ function AddLink() {
                   reports: {},
                 });
               }}
-            >
-              <FontAwesomeIcon icon={faTimes} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Cancel</span>
-            </button>
+              icon={faTimes}
+              text="Cancel"
+            />
             <span className={Styles.subHeading}>
               Adding a link for {courses[selectedCourse].code} -{" "}
               {courses[selectedCourse].title}
@@ -111,28 +88,27 @@ function AddLink() {
                 }}
               />
             </div>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.buttonAdd}`}
-              onClick={() => {
-                addNewLink(link).then(() => {
-                  selectCourse(-1);
-                  setFilter("");
-                  setLink({
-                    link: "",
-                    title: "",
-                    owner: {
-                      uid: auth.currentUser!!.uid,
-                      name: auth.currentUser!!.displayName!!,
-                    },
-                    course: "",
-                    reports: {},
+            <div className={Styles.buttonGroup}>
+              <ActionButton
+                action={() => {
+                  addNewLink(link).then(() => {
+                    selectCourse(-1);
+                    setLink({
+                      link: "",
+                      title: "",
+                      owner: {
+                        uid: auth.currentUser!!.uid,
+                        name: auth.currentUser!!.displayName!!,
+                      },
+                      course: "",
+                      reports: {},
+                    });
                   });
-                });
-              }}
-            >
-              <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Add</span>
-            </button>
+                }}
+                icon={faPlus}
+                text="Add"
+              />
+            </div>
             <div className={Styles.linkPreview}>
               <span className={Styles.previewHeading}>Link preview:</span>
               {link.link === "" || link.title === "" ? (

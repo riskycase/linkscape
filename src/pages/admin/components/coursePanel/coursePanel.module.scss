@@ -9,18 +9,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    flex-direction: column;
     width: 100%;
-    .button {
-      margin: 0.2rem;
-      display: flex;
-      align-content: center;
-      align-items: center;
-      .buttonIcon,
-      .buttonText {
-        margin: 0.25rem;
-      }
-    }
   }
   .actionButtonGroup {
     align-self: flex-end;

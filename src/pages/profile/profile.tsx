@@ -1,8 +1,10 @@
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faShare } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import UIkit from "uikit";
+import {
+  ActionButton,
+  LinkButton,
+} from "../../components/buttonWithIcon/buttonWithIcon";
 import { auth, getUserInfo } from "../../firebase";
 import Styles from "./profile.module.scss";
 
@@ -19,14 +21,7 @@ function Profile() {
     .catch(() => setUserInfo(null));
   return (
     <div className={Styles.profilePage}>
-      <Link to="/">
-        <button
-          className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-          Back
-        </button>
-      </Link>
+      <LinkButton link="/" icon={faHome} text="Home" />
       {userInfo ? (
         <>
           <span className={Styles.heading}>User profile</span>
@@ -41,29 +36,30 @@ function Profile() {
               {userInfo.moderator && (
                 <span className={Styles.moderatorBadge}>Moderator</span>
               )}
+              {uid === auth.currentUser?.uid && (
+                <div className={Styles.shareButton}>
+                  <ActionButton
+                    action={() => {
+                      URLObject.searchParams.delete("uid");
+                      URLObject.searchParams.set("uid", uid!!);
+                      navigator.clipboard.writeText(URLObject.href).then(() => {
+                        UIkit.notification("Profile URL copied to clipboard", {
+                          status: "success",
+                        });
+                        URLObject = new URL(window.location.href);
+                      });
+                    }}
+                    icon={faShare}
+                    text="Share profile"
+                  />
+                </div>
+              )}
             </div>
           </div>
           <span>
             Shared {userInfo.links.length} link
             {userInfo.links.length === 1 ? "" : "s"} till now
           </span>
-          {uid === auth.currentUser?.uid && (
-            <button
-              className={`uk-button uk-button-small uk-button-primary ${Styles.shareButton}`}
-              onClick={() => {
-                URLObject.searchParams.delete("uid");
-                URLObject.searchParams.set("uid", uid!!);
-                navigator.clipboard.writeText(URLObject.href).then(() => {
-                  UIkit.notification("Profile URL copied to clipboard", {
-                    status: "success",
-                  });
-                  URLObject = new URL(window.location.href);
-                });
-              }}
-            >
-              Share profile
-            </button>
-          )}
         </>
       ) : (
         URLObject.searchParams.has("uid") && (

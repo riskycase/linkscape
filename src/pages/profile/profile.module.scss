@@ -9,15 +9,6 @@
     font-size: x-large;
     margin: 0.25rem;
   }
-  .backButton {
-    margin: 0.25rem;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    > svg {
-      margin: 0.25rem;
-    }
-  }
   .photoAndName {
     display: flex;
     width: 100%;
@@ -50,8 +41,8 @@
     }
   }
   .shareButton {
-    flex: 0 1 auto;
-    align-self: flex-end;
+    transform: scale(0.75);
+    transform-origin: left;
   }
   .doesntExist {
     margin: auto 0;
