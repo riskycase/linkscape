@@ -15,7 +15,12 @@ import {
   LinkButton,
 } from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
-import { allCourses, getLinksForCourse, reportLink } from "../../firebase";
+import {
+  allCourses,
+  auth,
+  getLinksForCourse,
+  reportLink,
+} from "../../firebase";
 import Styles from "./links.module.scss";
 
 function Links() {
@@ -68,28 +73,30 @@ function Links() {
             </span>
           </div>
           <div className={Styles.buttonGroup}>
-            <ActionButton
-              action={() => {
-                UIkit.modal
-                  .prompt("Enter reason for reporting", "")
-                  .then((reason) => reportLink(activeLink, reason || ""))
-                  .then(() =>
-                    UIkit.notification({
-                      message: "Reported successfully",
-                      status: "success",
-                    })
-                  )
-                  .catch((reason) => {
-                    if (reason === "already-reported")
+            {auth.currentUser && (
+              <ActionButton
+                action={() => {
+                  UIkit.modal
+                    .prompt("Enter reason for reporting", "")
+                    .then((reason) => reportLink(activeLink, reason || ""))
+                    .then(() =>
                       UIkit.notification({
-                        message: "You have already reported this link",
-                        status: "danger",
-                      });
-                  });
-              }}
-              icon={faFlag}
-              text="Report"
-            />
+                        message: "Reported successfully",
+                        status: "success",
+                      })
+                    )
+                    .catch((reason) => {
+                      if (reason === "already-reported")
+                        UIkit.notification({
+                          message: "You have already reported this link",
+                          status: "danger",
+                        });
+                    });
+                }}
+                icon={faFlag}
+                text="Report"
+              />
+            )}
             <ActionButton
               action={() => {
                 let link = activeLink.link.link;
@@ -100,6 +107,11 @@ function Links() {
               text="Open"
             />
           </div>
+          {auth.currentUser === null && (
+            <span className={Styles.signInHint}>
+              Issue with link? Sign in to report it
+            </span>
+          )}
         </div>
       ) : (
         <div className={Styles.coursePanel}>
