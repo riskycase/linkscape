@@ -3,7 +3,6 @@ import {
   faChevronDown,
   faChevronUp,
   faHome,
-  faLink,
   faShare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";

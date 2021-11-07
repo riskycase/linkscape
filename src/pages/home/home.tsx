@@ -17,7 +17,7 @@ function Home() {
           </button>
         </Link>
       </div>
-      <img src={coverImage} className={Styles.coverImage} />
+      <img src={coverImage} className={Styles.coverImage} alt="Cover" />
     </div>
   );
 }
