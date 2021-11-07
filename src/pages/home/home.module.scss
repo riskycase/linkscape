@@ -5,25 +5,23 @@
   flex-direction: column;
   align-items: center;
   justify-items: center;
-  .homeHeading {
+  .heading {
+    font-size: 2.25rem;
+    text-transform: uppercase;
+  }
+  .description {
+    margin: 1rem 0;
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   .buttonGroup {
     margin: 1rem 0;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    > a > button {
-      margin: 0.25rem;
-    }
-    .signInHint {
-      width: 100%;
-      text-align: center;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      margin: 0.5rem;
-      color: #404040;
-    }
+  }
+  .coverImage {
+    max-width: min(45vw, 20rem);
+    margin: 1rem 0;
   }
 }
