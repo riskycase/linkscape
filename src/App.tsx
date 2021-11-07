@@ -15,6 +15,7 @@ import Admin from "./pages/admin/admin";
 import Links from "./pages/links/links";
 import Moderator from "./pages/moderator/moderator";
 import Footer from "./components/footer/footer";
+import LoadingScreen from "./components/loadingScreen/loadingScreen";
 
 function App() {
   const [admin, setAdmin] = useState(false);
@@ -30,6 +31,7 @@ function App() {
   });
   return (
     <div className={Styles.app}>
+      <LoadingScreen />
       <Router>
         <Header admin={admin} moderator={moderator} />
         <div className={Styles.body}>

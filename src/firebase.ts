@@ -25,6 +25,7 @@ import {
 import { get, getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
+import EventEmitter from "events";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfigFile.result.sdkConfig);
@@ -63,11 +64,16 @@ let userPrivileges: Promise<{ admin: boolean; moderator: boolean }> =
 
 let moderatorPromise: Promise<Array<{ user: User; uid: string }>>;
 
+const userReady = new EventEmitter();
+
 // Set up auth
 const auth = getAuth();
 auth.useDeviceLanguage();
 setPersistence(auth, browserLocalPersistence);
+let userSet = false;
 onAuthStateChanged(auth, (user) => {
+  userSet = true;
+  if (coursesFetched) userReady.emit("ready");
   if (user === null)
     userPrivileges = Promise.resolve({ admin: false, moderator: false });
   else {
@@ -130,6 +136,7 @@ function getModerators(): Promise<Array<{ user: User; uid: string }>> {
   });
 }
 
+let coursesFetched = false;
 function getUserByMail(emailId: string): Promise<{ user: User; uid: string }> {
   return new Promise((resolve, reject) => {
     getDocs(
@@ -149,6 +156,10 @@ function getUserByMail(emailId: string): Promise<{ user: User; uid: string }> {
 }
 
 let allCourses = getAllCourses();
+allCourses.then(() => {
+  coursesFetched = true;
+  if (userSet) userReady.emit("ready");
+});
 
 function addNewCourse(course: Course): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -468,6 +479,7 @@ export {
   app,
   analytics,
   auth,
+  userReady,
   userPrivileges,
   getAllCourses,
   allCourses,
