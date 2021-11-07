@@ -18,14 +18,14 @@ import {
   query,
   QueryDocumentSnapshot,
   setDoc,
-  SnapshotOptions,
   updateDoc,
   where,
   WithFieldValue,
-} from "firebase/firestore";
+} from "firebase/firestore/lite";
 import { get, getDatabase, push, ref, set } from "firebase/database";
 import firebaseConfigFile from "./.firebase.config.json";
 import { deepEqual } from "@firebase/util";
+import EventEmitter from "events";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfigFile.result.sdkConfig);
@@ -37,11 +37,8 @@ const realtime = getDatabase();
 
 const UserConverter: FirestoreDataConverter<User> = {
   toFirestore: (user: WithFieldValue<User>) => user,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): User => {
-    const data = snapshot.data(options);
+  fromFirestore: (snapshot: QueryDocumentSnapshot): User => {
+    const data = snapshot.data();
     return {
       name: data.name,
       emailId: data.emailId,
@@ -54,11 +51,8 @@ const UserConverter: FirestoreDataConverter<User> = {
 
 const CourseConverter: FirestoreDataConverter<CourseList> = {
   toFirestore: (courseList: WithFieldValue<CourseList>) => courseList,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): CourseList => {
-    const data = snapshot.data(options);
+  fromFirestore: (snapshot: QueryDocumentSnapshot): CourseList => {
+    const data = snapshot.data();
     return {
       list: data.list,
     };
@@ -70,11 +64,16 @@ let userPrivileges: Promise<{ admin: boolean; moderator: boolean }> =
 
 let moderatorPromise: Promise<Array<{ user: User; uid: string }>>;
 
+const userReady = new EventEmitter();
+
 // Set up auth
 const auth = getAuth();
 auth.useDeviceLanguage();
 setPersistence(auth, browserLocalPersistence);
+let userSet = false;
 onAuthStateChanged(auth, (user) => {
+  userSet = true;
+  if (coursesFetched) userReady.emit("ready");
   if (user === null)
     userPrivileges = Promise.resolve({ admin: false, moderator: false });
   else {
@@ -137,6 +136,7 @@ function getModerators(): Promise<Array<{ user: User; uid: string }>> {
   });
 }
 
+let coursesFetched = false;
 function getUserByMail(emailId: string): Promise<{ user: User; uid: string }> {
   return new Promise((resolve, reject) => {
     getDocs(
@@ -156,6 +156,10 @@ function getUserByMail(emailId: string): Promise<{ user: User; uid: string }> {
 }
 
 let allCourses = getAllCourses();
+allCourses.then(() => {
+  coursesFetched = true;
+  if (userSet) userReady.emit("ready");
+});
 
 function addNewCourse(course: Course): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -438,7 +442,6 @@ function deleteReports(id: string): Promise<void> {
 }
 
 function deleteLink(linkId: string, userId: string): Promise<void> {
-  console.log(linkId);
   return deleteReports(linkId)
     .then(() => set(ref(realtime, `links/${linkId}`), null))
     .then(() =>
@@ -449,10 +452,34 @@ function deleteLink(linkId: string, userId: string): Promise<void> {
     );
 }
 
+function getUserLinks(uid: string): Promise<Array<LinkWithKey>> {
+  return new Promise((resolve, reject) => {
+    get(ref(realtime, `users/${uid}/links`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const links: Promise<LinkWithKey>[] = [];
+          snapshot.forEach((linkRef) => {
+            links.push(
+              get(
+                ref(realtime, `links/${linkRef.key?.replace("!", "/")}`)
+              ).then((link) => ({
+                id: linkRef.key?.replace("!", "/")!!,
+                link: link.toJSON() as LinkObject,
+              }))
+            );
+          });
+          Promise.all(links).then(resolve).catch(reject);
+        } else resolve([]);
+      })
+      .catch(reject);
+  });
+}
+
 export {
   app,
   analytics,
   auth,
+  userReady,
   userPrivileges,
   getAllCourses,
   allCourses,
@@ -470,4 +497,5 @@ export {
   getFlaggedLinks,
   deleteReports,
   deleteLink,
+  getUserLinks,
 };

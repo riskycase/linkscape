@@ -4,13 +4,14 @@ import {
   faEdit,
   faPlus,
   faSave,
-  faSearch,
   faTimes,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import UIkit from "uikit";
+import { ActionButton } from "../../../../components/buttonWithIcon/buttonWithIcon";
+import CourseTable from "../../../../components/courseTable/courseTable";
 import {
   addNewCourse,
   allCourses,
@@ -22,7 +23,6 @@ import Styles from "./coursePanel.module.scss";
 
 function CoursePanel() {
   const [courses, setCourses] = useState<Array<Course>>([]);
-  const [filter, setFilter] = useState("");
   const [activeState, setActiveState] = useState("main");
   const [selectedCourse, selectCourse] = useState(-1);
   const [loading, setLoading] = useState(false);
@@ -40,34 +40,27 @@ function CoursePanel() {
       <div className={Styles.buttonGroup}>
         {activeState === "main" ? (
           <>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("add")}
-            >
-              <FontAwesomeIcon icon={faPlus} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Add a course</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("edit")}
-            >
-              <FontAwesomeIcon icon={faEdit} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Edit a course</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => setActiveState("delete")}
-            >
-              <FontAwesomeIcon icon={faTrash} className={Styles.buttonIcon} />
-              <span className={Styles.buttonText}>Delete a course</span>
-            </button>
+            <ActionButton
+              action={() => setActiveState("add")}
+              icon={faPlus}
+              text="Add a course"
+            />
+            <ActionButton
+              action={() => setActiveState("edit")}
+              icon={faEdit}
+              text="Edit a course"
+            />
+            <ActionButton
+              action={() => setActiveState("delete")}
+              icon={faTrash}
+              text="Delete a course"
+            />
           </>
         ) : (
           <button
             className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
             onClick={() => {
               setActiveState("main");
-              setFilter("");
               selectCourse(-1);
             }}
           >
@@ -123,7 +116,6 @@ function CoursePanel() {
                   className={`uk-button uk-button-danger uk-button-small ${Styles.buttonCancel}`}
                   onClick={() => {
                     selectCourse(-1);
-                    setFilter("");
                     setActiveState("main");
                   }}
                 >
@@ -161,47 +153,11 @@ function CoursePanel() {
           )}
           {(activeState === "delete" || activeState === "edit") &&
             (selectedCourse === -1 ? (
-              <>
-                <div className={`uk-inline ${Styles.filterInput}`}>
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className={Styles.filterIcon}
-                  />
-                  <input
-                    className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
-                    type="text"
-                    placeholder="Code or Title"
-                    id="filterInput"
-                    defaultValue={filter}
-                    onChange={(event) => setFilter(event.target.value)}
-                  />
-                </div>
-                <table
-                  className={`uk-table uk-table-divider ${Styles.courseTable}`}
-                >
-                  <thead>
-                    <tr>
-                      <th className="uk-text-nowrap">Course code</th>
-                      <th className="uk-width-expand">Title</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course, index) => (
-                      <tr
-                        key={index}
-                        hidden={!isCourseInFilter(course, filter)}
-                        onClick={() => {
-                          setEditedCourse(courses[index]);
-                          selectCourse(index);
-                        }}
-                      >
-                        <td>{course.code.replaceAll("/", "/ ")}</td>
-                        <td className="uk-width-expand">{course.title}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </>
+              <CourseTable
+                courses={courses}
+                setIndex={selectCourse}
+                setCourse={setEditedCourse}
+              />
             ) : (
               <>
                 {activeState === "edit" ? (
@@ -253,7 +209,6 @@ function CoursePanel() {
                     className={`uk-button uk-button-primary uk-button-small ${Styles.buttonCancel}`}
                     onClick={() => {
                       selectCourse(-1);
-                      setFilter("");
                       setActiveState("main");
                     }}
                   >
@@ -273,7 +228,6 @@ function CoursePanel() {
                       ).then(() => {
                         setActiveState("main");
                         setLoading(false);
-                        setFilter("");
                         UIkit.notification(
                           `${
                             activeState === "edit" ? "Edited" : "Deleted"
@@ -314,9 +268,3 @@ function CoursePanel() {
 }
 
 export default CoursePanel;
-function isCourseInFilter(course: Course, filter: string) {
-  return (
-    course.code.toLowerCase().indexOf(filter.toLowerCase()) + 1 ||
-    course.title.toLowerCase().indexOf(filter.toLowerCase()) + 1
-  );
-}

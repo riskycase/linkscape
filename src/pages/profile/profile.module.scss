@@ -5,19 +5,6 @@
   width: 100%;
   padding: 0.5rem;
   box-sizing: border-box;
-  .heading {
-    font-size: x-large;
-    margin: 0.25rem;
-  }
-  .backButton {
-    margin: 0.25rem;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    > svg {
-      margin: 0.25rem;
-    }
-  }
   .photoAndName {
     display: flex;
     width: 100%;
@@ -39,18 +26,34 @@
         font-size: larger;
       }
       .moderatorBadge {
-        background-color: cornflowerblue;
+        background-color: #2b6cb0;
         font-size: 0.8rem;
         color: white;
-        padding: 0.1rem 0.25rem;
+        padding: 0.1rem 0.5rem;
         border-radius: 0.6rem;
         flex: 0 1 auto;
         width: fit-content;
       }
     }
   }
+  .linksList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .linkDiv {
+      margin: 0.5rem 0;
+      display: flex;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .linkDetails {
+      display: flex;
+      flex-direction: column;
+    }
+  }
   .shareButton {
-    flex: 0 1 auto;
     align-self: flex-end;
   }
   .doesntExist {

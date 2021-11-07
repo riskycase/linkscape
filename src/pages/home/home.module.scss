@@ -5,15 +5,24 @@
   flex-direction: column;
   align-items: center;
   justify-items: center;
-  .homeHeading {
+  flex: 1 0 auto;
+  .heading {
+    font-size: 2.25rem;
+    text-transform: uppercase;
+  }
+  .description {
+    margin: 1rem 0;
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
   .buttonGroup {
     margin: 1rem 0;
     display: flex;
-    > a > button {
-      margin: 0.25rem;
-    }
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .coverImage {
+    max-width: min(45vw, 15rem);
+    margin: 1rem 0;
   }
 }

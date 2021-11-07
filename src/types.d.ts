@@ -15,12 +15,6 @@ interface LinkObject {
   link: string;
   course: string;
   owner: { uid: string; name: string };
-  reports: {
-    [key: string]: {
-      reason: string;
-      reportedBy: string;
-    };
-  };
 }
 
 // Course document
@@ -45,5 +39,11 @@ interface UserDetails {
 interface FlaggedLink {
   linkId: string;
   reports: { uid: string; reason: string }[];
+  link: LinkObject;
+}
+
+// Link object with  key
+interface LinkWithKey {
+  id: string;
   link: LinkObject;
 }

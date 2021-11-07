@@ -1,10 +1,14 @@
 import {
   faBookReader,
   faChevronLeft,
+  faHome,
   faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import {
+  ActionButton,
+  LinkButton,
+} from "../../components/buttonWithIcon/buttonWithIcon";
 import { auth } from "../../firebase";
 import Styles from "./admin.module.scss";
 import ActionCard from "./components/actionCard/actionCard";
@@ -15,15 +19,17 @@ function Admin() {
   const [panel, setPanel] = useState("main");
   return (
     <div className={Styles.body}>
-      {panel !== "main" && (
-        <button
-          className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-          onClick={() => setPanel("main")}
-        >
-          <FontAwesomeIcon icon={faChevronLeft} className={Styles.backIcon} />
-          <span className={Styles.backText}>Back</span>
-        </button>
-      )}
+      <div className={Styles.buttonGroup}>
+        {panel !== "main" ? (
+          <ActionButton
+            action={() => setPanel("main")}
+            icon={faChevronLeft}
+            text="Admin panel"
+          />
+        ) : (
+          <LinkButton link="/" icon={faHome} text="Home" />
+        )}
+      </div>
       {panel === "main" && (
         <>
           <span className={Styles.headerText}>

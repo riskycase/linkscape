@@ -1,15 +1,20 @@
 import {
   faChevronLeft,
   faChevronRight,
+  faHome,
   faTimes,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepEqual } from "@firebase/util";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { deleteLink, deleteReports, getFlaggedLinks } from "../../firebase";
 import Styles from "./moderator.module.scss";
+import {
+  ActionButton,
+  LinkButton,
+} from "../../components/buttonWithIcon/buttonWithIcon";
+import LinkDiv from "../../components/linkDiv/linkDiv";
 
 function Moderator() {
   const [activeLink, setActiveLink] = useState(-1);
@@ -22,17 +27,7 @@ function Moderator() {
     <div className={Styles.moderatorPage}>
       {activeLink === -1 ? (
         <div className={Styles.flaggedLinksPanel}>
-          <Link to="/">
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                className={Styles.buttonIcon}
-              />
-              <span className={Styles.buttonText}>Back to home</span>
-            </button>
-          </Link>
+          <LinkButton link="/" icon={faHome} text="Home" />
           <span className={Styles.heading}>Flagged links</span>
           {links.map((link, index) => (
             <div
@@ -49,40 +44,20 @@ function Moderator() {
         </div>
       ) : (
         <div className={Styles.detailedLink}>
-          <button
-            className={`uk-button uk-button-primary uk-button-small ${Styles.backButton}`}
-            onClick={() => setActiveLink(-1)}
-          >
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              className={Styles.buttonIcon}
-            />
-            <span className={Styles.buttonText}>Back to reports list</span>
-          </button>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Title</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              {links[activeLink].link.title}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Link</span>
-            <span className={`uk-text-truncate ${Styles.value}`}>
-              {links[activeLink].link.link}
-            </span>
-          </div>
-          <div className={Styles.keyValue}>
-            <span className={Styles.key}>Shared by</span>
-            <span className={`uk-text-break ${Styles.value}`}>
-              <Link to={`/profile?uid=${links[activeLink].link.owner.uid}`}>
-                {links[activeLink].link.owner.name}
-              </Link>
-            </span>
-          </div>
+          <ActionButton
+            action={() => setActiveLink(-1)}
+            icon={faChevronLeft}
+            text="Reports list"
+          />
+          <LinkDiv
+            link={{
+              id: links[activeLink].linkId,
+              link: links[activeLink].link,
+            }}
+          />
           <div className={Styles.buttonGroup}>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => {
+            <ActionButton
+              action={() => {
                 deleteReports(links[activeLink].linkId).then(() =>
                   getFlaggedLinks().then((upstreamLinks) => {
                     setActiveLink(-1);
@@ -90,29 +65,24 @@ function Moderator() {
                   })
                 );
               }}
-            >
-              <FontAwesomeIcon icon={faTimes} />
-              <span className={Styles.buttonText}>Dismiss reports</span>
-            </button>
-            <button
-              className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
-              onClick={() => {
+              icon={faTimes}
+              text="Dismiss reports"
+            />
+            <ActionButton
+              action={() => {
                 deleteLink(
                   links[activeLink].linkId,
                   links[activeLink].link.owner.uid
-                )
-                  .then(() =>
-                    getFlaggedLinks().then((upstreamLinks) => {
-                      setActiveLink(-1);
-                      setLinks(upstreamLinks);
-                    })
-                  )
-                  .catch(console.error);
+                ).then(() =>
+                  getFlaggedLinks().then((upstreamLinks) => {
+                    setActiveLink(-1);
+                    setLinks(upstreamLinks);
+                  })
+                );
               }}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-              <span className={Styles.buttonText}>Delete link</span>
-            </button>
+              icon={faTrash}
+              text="Delete link"
+            />
           </div>
           <span className={Styles.subHeading}>Reports</span>
           {links[activeLink].reports.map((report, index) => (

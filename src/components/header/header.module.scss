@@ -1,6 +1,8 @@
 .navbar {
   --transition-time: 250ms;
   --size: 1rem;
+  background-color: #171923;
+  color: #edf2f7;
   .navItem {
     display: flex;
     justify-content: flex-end;
@@ -26,31 +28,18 @@
           height: calc(2 * var(--size));
           border-radius: 50%;
         }
-        .dropdown {
+        .dropdownButton {
           height: 0;
           width: 0;
           margin: calc(0.5 * var(--size));
-          border-top: calc(0.8 * var(--size)) solid black;
+          border-top: calc(0.8 * var(--size)) solid #edf2f7;
           border-left: calc(0.5 * var(--size)) solid transparent;
           border-right: calc(0.5 * var(--size)) solid transparent;
         }
       }
-      .userOptions {
-        display: flex;
-        align-items: flex-start;
-        flex-direction: column;
-        transition: max-height var(--transition-time);
-        max-height: 10rem;
-        overflow: hidden;
-        // .optionsList {
-        //   margin: 0;
-        //   display: flex;
-        //   flex-direction: column;
-        //   align-items: flex-start;
-        // }
-      }
-      .hidden {
-        max-height: 0;
+      .dropdown {
+        background-color: #1a202c;
+        color: #edf2f7;
       }
     }
   }
