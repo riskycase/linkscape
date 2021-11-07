@@ -88,6 +88,7 @@ function CoursePanel({
                     UIkit.notification({
                       message: "Reported successfully",
                       status: "success",
+                      timeout: 1500,
                     })
                   )
                   .catch((reason) => {
@@ -95,6 +96,7 @@ function CoursePanel({
                       UIkit.notification({
                         message: "You have already reported this link",
                         status: "danger",
+                        timeout: 1500,
                       });
                   });
               }}
