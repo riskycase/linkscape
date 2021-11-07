@@ -1,0 +1,58 @@
+.linkPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  .signInHint {
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    margin: 0.5rem;
+    color: #404040;
+  }
+  .buttonGroup {
+    display: flex;
+    align-self: flex-end;
+    margin: 0.25rem;
+  }
+}
+.coursePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .courseDetails {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    .courseCode {
+      font-size: 2rem;
+      margin: 0.25rem 0;
+      @media screen and (max-width: 425px) {
+        font-size: 1.25rem;
+      }
+    }
+    .courseTitle {
+      text-transform: uppercase;
+      margin: 0.25rem 0;
+      @media screen and (max-width: 425px) {
+        font-size: 0.85rem;
+      }
+    }
+  }
+  .linksList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .linkDiv {
+      margin: 0.5rem 0;
+      display: flex;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
