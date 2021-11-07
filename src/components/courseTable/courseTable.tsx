@@ -22,7 +22,7 @@ function CourseTable({
   const [filter, setFilter] = useState("");
   return (
     <>
-      <div className={`uk-inline ${Styles.filterInput}`}>
+      <div className={`uk-inline  uk-border-pill ${Styles.filterInput}`}>
         <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
         <input
           className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
@@ -33,27 +33,33 @@ function CourseTable({
           onChange={(event) => setFilter(event.target.value)}
         />
       </div>
-      <table className={`uk-table uk-table-divider ${Styles.courseTable}`}>
+      <table className={`uk-table ${Styles.courseTable}`}>
         <thead>
-          <tr>
-            <th className="uk-text-nowrap">Course code</th>
-            <th className="uk-width-expand">Title</th>
+          <tr className={Styles.tableRow}>
+            <th className={`uk-text-nowrap ${Styles.tableHeading}`}>
+              Course code
+            </th>
+            <th className={`uk-width-expand ${Styles.tableHeading}`}>Title</th>
           </tr>
         </thead>
         <tbody>
-          {courses.map((course, index) => (
-            <tr
-              key={index}
-              hidden={!isCourseInFilter(course, filter)}
-              onClick={() => {
-                setCourse && setCourse(courses[index]);
-                setIndex && setIndex(index);
-              }}
-            >
-              <td>{course.code.replaceAll("/", "/ ")}</td>
-              <td className="uk-width-expand">{course.title}</td>
-            </tr>
-          ))}
+          {courses.map((course, index) =>
+            isCourseInFilter(course, filter) ? (
+              <tr
+                key={index}
+                className={Styles.tableRow}
+                onClick={() => {
+                  setCourse && setCourse(courses[index]);
+                  setIndex && setIndex(index);
+                }}
+              >
+                <td>{course.code.replaceAll("/", "/ ")}</td>
+                <td className="uk-width-expand">{course.title}</td>
+              </tr>
+            ) : (
+              <></>
+            )
+          )}
         </tbody>
       </table>
     </>

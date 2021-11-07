@@ -1,21 +1,27 @@
 .filterInput {
-  margin: 0.5rem;
-  padding: 0.25rem;
+  margin: 1rem 0;
+  padding: 0 0.5rem;
   display: flex;
   align-items: center;
+  border: 1px solid #a0aec0;
+  border-radius: 2.5rem;
   .filterIcon {
     margin: 0.1rem;
   }
   .filterTextBox {
     margin: 0.1rem;
-    max-width: 20rem;
     border: none;
+    background-color: #00000000;
+    color: #edf2f7;
   }
-}
-.filterInput:focus-within {
-  border: 1px solid #e5e5e5;
 }
 .courseTable {
   flex: 1 1 auto;
   margin: 0;
+  .tableRow {
+    border-bottom: 1px solid #a0aec0;
+    .tableHeading {
+      color: #cbd5e0;
+    }
+  }
 }

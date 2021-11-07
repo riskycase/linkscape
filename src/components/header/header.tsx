@@ -32,7 +32,7 @@ function Header({
   return (
     <div uk-sticky="animation: uk-animation-fade; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; cls-inactive: ; top: 200">
       <nav
-        className={`uk-navbar-container uk-navbar-primary uk-padding-small ${Styles.navbar}`}
+        className={`uk-navbar-container uk-navbar-transparent uk-padding-small ${Styles.navbar}`}
         uk-navbar="true"
       >
         <div className={`uk-navbar-right ${Styles.navItem}`}>
@@ -58,9 +58,12 @@ function Header({
                   alt="Signed in"
                   className={Styles.userImage}
                 ></img>
-                <div className={Styles.dropdown} />
+                <div className={Styles.dropdownButton} />
               </span>
-              <div className="uk-navbar-dropdown" id="header-dropdown">
+              <div
+                className={`uk-navbar-dropdown uk-light ${Styles.dropdown}`}
+                id="header-dropdown"
+              >
                 <ul className={`uk-nav uk-navbar-dropdown-nav`}>
                   <li>
                     <LinkWithIcon action="/" icon={faHome} displayText="Home" />

@@ -14,7 +14,7 @@ function ActionButton({
 }) {
   return (
     <button
-      className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
+      className={`uk-button uk-button-primary uk-border-pill uk-button-small ${Styles.button}`}
       onClick={action}
     >
       <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />
@@ -35,7 +35,7 @@ function LinkButton({
   return (
     <Link to={link}>
       <button
-        className={`uk-button uk-button-primary uk-button-small ${Styles.button}`}
+        className={`uk-button uk-button-primary uk-border-pill uk-button-small ${Styles.button}`}
       >
         <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />
         <span className={Styles.buttonText}>{text}</span>
