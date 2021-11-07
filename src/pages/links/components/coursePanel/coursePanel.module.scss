@@ -47,12 +47,56 @@
     flex-direction: column;
     width: 100%;
     .linkDiv {
-      margin: 0.5rem 0;
+      margin: 1rem 0;
       display: flex;
       padding: 0.5rem;
       box-sizing: border-box;
       align-items: center;
       justify-content: space-between;
     }
+  }
+  .signInHint {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    align-self: flex-end;
+    margin: 0.5rem;
+  }
+  .buttonGroup {
+    display: flex;
+    align-self: flex-end;
+  }
+}
+.addLinkPanel {
+  display: flex;
+  flex-direction: column;
+  .subHeading {
+    font-size: 1.25rem;
+  }
+  .inputGroup {
+    margin: 0.75rem 0;
+    display: flex;
+    flex-direction: column;
+    .inputLabel {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      margin: 0.25rem 0.5rem;
+    }
+    .input {
+      background: #00000000;
+      padding: 0.1rem 0.75rem;
+      border: 3px solid #e5e5e5;
+      border-radius: 1.25rem;
+      color: #edf2f7;
+    }
+  }
+  .buttonGroup {
+    align-self: flex-end;
+    display: flex;
+    margin: 0.5rem;
+  }
+  .linkPreview {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
   }
 }

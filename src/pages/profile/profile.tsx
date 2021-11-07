@@ -60,6 +60,7 @@ function Profile() {
                       navigator.clipboard.writeText(URLObject.href).then(() => {
                         UIkit.notification("Profile URL copied to clipboard", {
                           status: "success",
+                          timeout: 1500,
                         });
                         URLObject = new URL(window.location.href);
                       });

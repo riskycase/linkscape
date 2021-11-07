@@ -12,14 +12,13 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, userPrivileges } from "./firebase";
 import { useState } from "react";
 import Admin from "./pages/admin/admin";
-import AddLink from "./pages/addLink/addLink";
 import Links from "./pages/links/links";
 import Moderator from "./pages/moderator/moderator";
 
 function App() {
   const [admin, setAdmin] = useState(false);
   const [moderator, setModerator] = useState(false);
-  const [user, setUser] = useState(auth.currentUser?.uid);
+  const [, setUser] = useState(auth.currentUser?.uid);
   onAuthStateChanged(auth, (user) => {
     setUser(user?.uid);
     if (user !== null)
@@ -37,7 +36,6 @@ function App() {
             <Route path="/" exact component={Home} />
             <Route path="/profile" component={Profile} />
             <Route path="/links" component={Links} />
-            {auth.currentUser && <Route path="/add" component={AddLink} />}
             {(admin || moderator) && (
               <Route path="/moderator" component={Moderator} />
             )}
