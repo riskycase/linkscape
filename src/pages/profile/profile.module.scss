@@ -5,10 +5,6 @@
   width: 100%;
   padding: 0.5rem;
   box-sizing: border-box;
-  .heading {
-    font-size: x-large;
-    margin: 0.25rem;
-  }
   .photoAndName {
     display: flex;
     width: 100%;
@@ -30,10 +26,10 @@
         font-size: larger;
       }
       .moderatorBadge {
-        background-color: cornflowerblue;
+        background-color: #2b6cb0;
         font-size: 0.8rem;
         color: white;
-        padding: 0.1rem 0.25rem;
+        padding: 0.1rem 0.5rem;
         border-radius: 0.6rem;
         flex: 0 1 auto;
         width: fit-content;
@@ -52,10 +48,13 @@
       align-items: center;
       justify-content: space-between;
     }
+    .linkDetails {
+      display: flex;
+      flex-direction: column;
+    }
   }
   .shareButton {
-    transform: scale(0.75);
-    transform-origin: left;
+    align-self: flex-end;
   }
   .doesntExist {
     margin: auto 0;
