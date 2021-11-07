@@ -19,7 +19,9 @@ import Moderator from "./pages/moderator/moderator";
 function App() {
   const [admin, setAdmin] = useState(false);
   const [moderator, setModerator] = useState(false);
+  const [user, setUser] = useState(auth.currentUser?.uid);
   onAuthStateChanged(auth, (user) => {
+    setUser(user?.uid);
     if (user !== null)
       userPrivileges.then((privileges) => {
         setAdmin(privileges.admin);
@@ -29,7 +31,7 @@ function App() {
   return (
     <div className={Styles.app}>
       <Router>
-        <Header user={auth.currentUser} admin={admin} moderator={moderator} />
+        <Header admin={admin} moderator={moderator} />
         <div className={Styles.body}>
           <Switch>
             <Route path="/" exact component={Home} />

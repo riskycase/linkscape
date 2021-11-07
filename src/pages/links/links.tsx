@@ -1,5 +1,6 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useHistory } from "react-router";
 import { LinkButton } from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
 import { allCourses } from "../../firebase";
@@ -7,10 +8,11 @@ import CoursePanel from "./components/coursePanel/coursePanel";
 import Styles from "./links.module.scss";
 
 function Links() {
+  const history = useHistory();
   const [selectedCourse, selectCourse] = useState(-1);
   const [courses, setCourses] = useState<Course[]>([]);
+  const URLObject = new URL(window.location.href);
   allCourses.then(setCourses).then(() => {
-    const URLObject = new URL(window.location.href);
     if (URLObject.searchParams.has("course"))
       selectCourse(
         courses.findIndex(
@@ -27,7 +29,13 @@ function Links() {
       {selectedCourse === -1 ? (
         <>
           <LinkButton link="/" icon={faHome} text="Home" />
-          <CourseTable courses={courses} setIndex={selectCourse} />
+          <CourseTable
+            courses={courses}
+            setIndex={(index: number) => {
+              URLObject.searchParams.set("course", courses[index].code);
+              history.push("/links?" + URLObject.searchParams.toString());
+            }}
+          />
         </>
       ) : (
         <CoursePanel

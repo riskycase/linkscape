@@ -22,15 +22,26 @@ function CoursePanel({
   returnFunction: Function;
 }) {
   let history = useHistory();
+  const URLObject = new URL(window.location.href);
   const [courseLinks, setCourseLinks] = useState<Array<LinkWithKey>>([]);
   const [activeLink, setActiveLink] = useState<LinkWithKey | null>(null);
   getLinksForCourse(course.code).then((upstreamLinks) => {
     if (!deepEqual(upstreamLinks, courseLinks)) setCourseLinks(upstreamLinks);
+    if (URLObject.searchParams.has("link"))
+      setActiveLink(
+        courseLinks.find(
+          (link) => link.id === URLObject.searchParams.get("link")
+        ) || null
+      );
   });
   return activeLink ? (
     <div className={Styles.linkPanel}>
       <ActionButton
-        action={() => setActiveLink(null)}
+        action={() => {
+          URLObject.searchParams.delete("link");
+          history.push("/links?" + URLObject.searchParams.toString());
+          setActiveLink(null);
+        }}
         icon={faChevronLeft}
         text="Course page"
       />
@@ -98,7 +109,10 @@ function CoursePanel({
             <div
               className={Styles.linkDiv}
               key={courseLink.id}
-              onClick={() => setActiveLink(courseLink)}
+              onClick={() => {
+                URLObject.searchParams.set("link", courseLink.id);
+                history.push("/links?" + URLObject.searchParams.toString());
+              }}
             >
               <div className="uk-panel uk-text-wrap uk-text-break">
                 {courseLink.link.title}
