@@ -1,0 +1,31 @@
+.footer {
+  width: 100%;
+  background-color: #00000000;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #edf2f7;
+  flex: 0 0 auto;
+  .text {
+    text-align: center;
+    width: 100%;
+  }
+  .socialIcons {
+    margin-top: 0.5rem;
+    .socialIcon {
+      font-size: 1.25rem;
+      margin: 0.25rem;
+      color: #edf2f7;
+    }
+  }
+  .formLink {
+    color: #edf2f7;
+    margin: 0.25rem;
+    .formIcon {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}

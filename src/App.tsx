@@ -14,6 +14,7 @@ import { useState } from "react";
 import Admin from "./pages/admin/admin";
 import Links from "./pages/links/links";
 import Moderator from "./pages/moderator/moderator";
+import Footer from "./components/footer/footer";
 
 function App() {
   const [admin, setAdmin] = useState(false);
@@ -42,6 +43,7 @@ function App() {
             {admin && <Route path="/admin" component={Admin} />}
             <Redirect to="/" />
           </Switch>
+          <Footer />
         </div>
       </Router>
     </div>
