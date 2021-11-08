@@ -1,4 +1,32 @@
-# Getting Started with Create React App
+# [Linkscape](https://linkscape.firebaseapp.com/)
+
+## Link sharing hub for universities built with React
+
+### Setup
+
+Login with firebase-cli and set up hosting, firestore and realtime database for
+this repo. On firebase console enable authentication, firestore and realtime
+database, then push to default branch to deploy if you set up CI.
+
+### Usage
+
+The main link list is available to all users, sorted by course. Anyone can
+access the links without signing in. Adding links requires a signed in user.
+
+The site has inbuilt support for reporting of links as incorrect, spam, etc,
+which is also restricted to signed users to prevent abuse. The report system by
+default limits one report per user, and a person with moderator role can view
+all the reports in a seperate moderator dashboard.
+
+A seperate admin panel is also provided, which requires manually setting the
+value of admin key to true in a user's entry under firestore console. Admins
+can then appoint or dismiss moderators, add and edit courses present in
+firestore without having to access the console.
+
+Moderators are given access to delete another person's link or dismiss the
+reports of that link as invalid.
+
+### `create-react-app` documentation
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
