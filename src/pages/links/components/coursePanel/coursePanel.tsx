@@ -7,6 +7,7 @@ import {
   faPlus,
   faShare,
   faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import LinkDiv from "../../../../components/linkDiv/linkDiv";
 import {
   addNewLink,
   auth,
+  deleteLink,
   getLinksForCourse,
   reportLink,
 } from "../../../../firebase";
@@ -78,32 +80,53 @@ function CoursePanel({
         />
         <LinkDiv link={activeLink} />
         <div className={Styles.buttonGroup}>
-          {auth.currentUser && (
-            <ActionButton
-              action={() => {
-                UIkit.modal
-                  .prompt("Enter reason for reporting", "")
-                  .then((reason) => reportLink(activeLink, reason || ""))
-                  .then(() =>
-                    UIkit.notification({
-                      message: "Reported successfully",
-                      status: "success",
-                      timeout: 1500,
-                    })
-                  )
-                  .catch((reason) => {
-                    if (reason === "already-reported")
+          {auth.currentUser &&
+            (auth.currentUser.uid !== activeLink.link.owner.uid ? (
+              <ActionButton
+                action={() => {
+                  UIkit.modal
+                    .prompt("Enter reason for reporting", "")
+                    .then((reason) => reportLink(activeLink, reason || ""))
+                    .then(() =>
                       UIkit.notification({
-                        message: "You have already reported this link",
-                        status: "danger",
+                        message: "Reported successfully",
+                        status: "success",
                         timeout: 1500,
-                      });
-                  });
-              }}
-              icon={faFlag}
-              text="Report"
-            />
-          )}
+                      })
+                    )
+                    .catch((reason) => {
+                      if (reason === "already-reported")
+                        UIkit.notification({
+                          message: "You have already reported this link",
+                          status: "danger",
+                          timeout: 1500,
+                        });
+                    });
+                }}
+                icon={faFlag}
+                text="Report"
+              />
+            ) : (
+              <ActionButton
+                icon={faTrash}
+                text="Delete"
+                action={() => {
+                  deleteLink(
+                    `${course.code}/${activeLink.id}`,
+                    auth.currentUser!!.uid
+                  )
+                    .then(() => getLinksForCourse(course.code))
+                    .then((upstreamLinks) => {
+                      URLObject.searchParams.delete("link");
+                      history.push(
+                        "/links?" + URLObject.searchParams.toString()
+                      );
+                      setCourseLinks(upstreamLinks);
+                      setActiveLink(null);
+                    });
+                }}
+              />
+            ))}
           <ActionButton
             action={() => {
               let link = activeLink.link.link;

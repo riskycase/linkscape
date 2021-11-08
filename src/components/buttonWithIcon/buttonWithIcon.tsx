@@ -33,7 +33,7 @@ function LinkButton({
   text: string;
 }) {
   return (
-    <Link to={link}>
+    <Link to={link} className={Styles.linkContainer}>
       <button
         className={`uk-button uk-button-primary uk-border-pill uk-button-small ${Styles.button}`}
       >

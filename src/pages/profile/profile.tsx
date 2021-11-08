@@ -2,6 +2,7 @@ import { deepEqual } from "@firebase/util";
 import {
   faChevronDown,
   faChevronUp,
+  faExternalLinkAlt,
   faHome,
   faShare,
   faTrash,
@@ -65,23 +66,25 @@ function Profile() {
           </span>
           <div className={Styles.linksList}>
             {userLinks.map((userLink, index) => (
-              <div className={Styles.linkContainer}>
-                <div className={Styles.linkDiv} key={userLink.id}>
+              <div className={Styles.linkContainer} key={userLink.id}>
+                <div
+                  className={Styles.linkDiv}
+                  onClick={() =>
+                    setSelectedLink(selectedLink === index ? -1 : index)
+                  }
+                >
                   <div className="uk-panel uk-text-wrap uk-text-break">
                     {userLink.link.course} - {userLink.link.title}
                   </div>
                   <FontAwesomeIcon
                     icon={selectedLink === index ? faChevronUp : faChevronDown}
-                    onClick={() =>
-                      setSelectedLink(selectedLink === index ? -1 : index)
-                    }
                   />
                 </div>
                 {selectedLink === index && (
                   <div className={Styles.linkDetails}>
                     <LinkDiv link={userLink} />
-                    {auth.currentUser && uid === auth.currentUser.uid && (
-                      <div className={Styles.deleteButton}>
+                    <div className={Styles.buttonGroup}>
+                      {auth.currentUser && uid === auth.currentUser.uid && (
                         <ActionButton
                           icon={faTrash}
                           text="Delete"
@@ -101,8 +104,17 @@ function Profile() {
                               .catch(() => setUserInfo(null));
                           }}
                         />
-                      </div>
-                    )}
+                      )}
+                      <ActionButton
+                        action={() => {
+                          let link = userLink.link.link;
+                          if (!link.startsWith("http")) link = "http://" + link;
+                          window.open(link, "_blank");
+                        }}
+                        icon={faExternalLinkAlt}
+                        text="Open"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
