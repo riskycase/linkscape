@@ -165,6 +165,9 @@ function addNewCourse(course: Course): Promise<void> {
   return new Promise((resolve, reject) => {
     allCourses.then((courses) => {
       courses.push(course);
+      courses = courses.sort((courseA, courseB) =>
+        courseA.code < courseB.code ? -1 : 1
+      );
       setDoc(doc(firestore, "courses", "list").withConverter(CourseConverter), {
         list: courses,
       })
@@ -180,6 +183,9 @@ function editCourse(editedCourse: Course, id: number): Promise<void> {
       const oldCourse = courses[id];
       const oldLinks = getLinksForCourse(oldCourse.code);
       courses[id] = editedCourse;
+      courses = courses.sort((courseA, courseB) =>
+        courseA.code < courseB.code ? -1 : 1
+      );
       oldLinks
         .then((links) =>
           links.map((link) => {
