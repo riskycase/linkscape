@@ -66,16 +66,18 @@ function Profile() {
           </span>
           <div className={Styles.linksList}>
             {userLinks.map((userLink, index) => (
-              <div className={Styles.linkContainer}>
-                <div className={Styles.linkDiv} key={userLink.id}>
+              <div className={Styles.linkContainer} key={userLink.id}>
+                <div
+                  className={Styles.linkDiv}
+                  onClick={() =>
+                    setSelectedLink(selectedLink === index ? -1 : index)
+                  }
+                >
                   <div className="uk-panel uk-text-wrap uk-text-break">
                     {userLink.link.course} - {userLink.link.title}
                   </div>
                   <FontAwesomeIcon
                     icon={selectedLink === index ? faChevronUp : faChevronDown}
-                    onClick={() =>
-                      setSelectedLink(selectedLink === index ? -1 : index)
-                    }
                   />
                 </div>
                 {selectedLink === index && (
