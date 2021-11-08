@@ -2,6 +2,7 @@ import { deepEqual } from "@firebase/util";
 import {
   faChevronDown,
   faChevronUp,
+  faExternalLinkAlt,
   faHome,
   faShare,
   faTrash,
@@ -80,8 +81,8 @@ function Profile() {
                 {selectedLink === index && (
                   <div className={Styles.linkDetails}>
                     <LinkDiv link={userLink} />
-                    {auth.currentUser && uid === auth.currentUser.uid && (
-                      <div className={Styles.deleteButton}>
+                    <div className={Styles.buttonGroup}>
+                      {auth.currentUser && uid === auth.currentUser.uid && (
                         <ActionButton
                           icon={faTrash}
                           text="Delete"
@@ -101,8 +102,17 @@ function Profile() {
                               .catch(() => setUserInfo(null));
                           }}
                         />
-                      </div>
-                    )}
+                      )}
+                      <ActionButton
+                        action={() => {
+                          let link = userLink.link.link;
+                          if (!link.startsWith("http")) link = "http://" + link;
+                          window.open(link, "_blank");
+                        }}
+                        icon={faExternalLinkAlt}
+                        text="Open"
+                      />
+                    </div>
                   </div>
                 )}
               </div>

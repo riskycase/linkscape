@@ -51,6 +51,11 @@
     .linkDetails {
       display: flex;
       flex-direction: column;
+      .buttonGroup {
+        align-self: flex-end;
+        display: flex;
+        flex-wrap: wrap;
+      }
     }
   }
   .shareButton {
