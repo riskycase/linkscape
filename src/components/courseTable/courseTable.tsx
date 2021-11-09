@@ -21,20 +21,22 @@ function CourseTable({
 }) {
   const [filter, setFilter] = useState("");
   return (
-    <>
-      <div className={`uk-inline  uk-border-pill ${Styles.filterInput}`}>
-        <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
-        <input
-          className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
-          type="text"
-          placeholder="Code or Title"
-          id="filterInput"
-          defaultValue={filter}
-          onChange={(event) => setFilter(event.target.value)}
-        />
+    <div className={Styles.container}>
+      <div className={Styles.filterContainer}>
+        <div className={`uk-inline  uk-border-pill ${Styles.filterInput}`}>
+          <FontAwesomeIcon icon={faSearch} className={Styles.filterIcon} />
+          <input
+            className={`uk-input uk-form-blank ${Styles.filterTextBox}`}
+            type="text"
+            placeholder="Code or Title"
+            id="filterInput"
+            defaultValue={filter}
+            onChange={(event) => setFilter(event.target.value)}
+          />
+        </div>
       </div>
       <table className={`uk-table ${Styles.courseTable}`}>
-        <thead>
+        <thead className={Styles.tableHeading}>
           <tr className={Styles.tableRow}>
             <th className={`uk-text-nowrap ${Styles.tableHeading}`}>
               Course code
@@ -42,7 +44,7 @@ function CourseTable({
             <th className={`uk-width-expand ${Styles.tableHeading}`}>Title</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className={Styles.tableBody}>
           {courses.map((course, index) =>
             isCourseInFilter(course, filter) ? (
               <tr
@@ -62,7 +64,7 @@ function CourseTable({
           )}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
