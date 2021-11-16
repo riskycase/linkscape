@@ -9,15 +9,15 @@ function ActionButton({
   text,
 }: {
   action: React.MouseEventHandler<HTMLButtonElement>;
-  icon: IconDefinition;
+  icon?: IconDefinition;
   text: string;
 }) {
   return (
     <button
-      className={`uk-button uk-button-primary uk-border-pill uk-button-small ${Styles.button}`}
+      className={`uk-button uk-border-pill uk-button-small ${Styles.button}`}
       onClick={action}
     >
-      <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />
+      {icon && <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />}
       <span className={Styles.buttonText}>{text}</span>
     </button>
   );
@@ -29,15 +29,15 @@ function LinkButton({
   text,
 }: {
   link: string;
-  icon: IconDefinition;
+  icon?: IconDefinition;
   text: string;
 }) {
   return (
     <Link to={link} className={Styles.linkContainer}>
       <button
-        className={`uk-button uk-button-primary uk-border-pill uk-button-small ${Styles.button}`}
+        className={`uk-button uk-border-pill uk-button-small ${Styles.button}`}
       >
-        <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />
+        {icon && <FontAwesomeIcon icon={icon} className={Styles.buttonIcon} />}
         <span className={Styles.buttonText}>{text}</span>
       </button>
     </Link>
