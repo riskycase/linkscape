@@ -42,7 +42,6 @@ function Profile() {
   else history.push("/");
   return (
     <div className={Styles.profilePage}>
-      <LinkButton link="/" icon={faHome} text="Home" />
       {userInfo ? (
         <>
           <div className={Styles.photoAndName}>

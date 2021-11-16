@@ -27,7 +27,6 @@ function Moderator() {
     <div className={Styles.moderatorPage}>
       {activeLink === -1 ? (
         <div className={Styles.flaggedLinksPanel}>
-          <LinkButton link="/" icon={faHome} text="Home" />
           <span className={Styles.heading}>Flagged links</span>
           {links.map((link, index) => (
             <div

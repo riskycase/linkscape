@@ -20,14 +20,12 @@ function Admin() {
   return (
     <div className={Styles.body}>
       <div className={Styles.buttonGroup}>
-        {panel !== "main" ? (
+        {panel !== "main" && (
           <ActionButton
             action={() => setPanel("main")}
             icon={faChevronLeft}
             text="Admin panel"
           />
-        ) : (
-          <LinkButton link="/" icon={faHome} text="Home" />
         )}
       </div>
       {panel === "main" && (
