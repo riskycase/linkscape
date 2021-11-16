@@ -45,8 +45,8 @@ function App() {
             {admin && <Route path="/admin" component={Admin} />}
             <Redirect to="/" />
           </Switch>
-          <Footer />
         </div>
+        <Footer />
       </Router>
     </div>
   );
