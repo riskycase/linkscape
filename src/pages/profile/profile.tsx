@@ -3,7 +3,6 @@ import {
   faChevronDown,
   faChevronUp,
   faExternalLinkAlt,
-  faHome,
   faShare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -11,10 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import UIkit from "uikit";
-import {
-  ActionButton,
-  LinkButton,
-} from "../../components/buttonWithIcon/buttonWithIcon";
+import { ActionButton } from "../../components/buttonWithIcon/buttonWithIcon";
 import LinkDiv from "../../components/linkDiv/linkDiv";
 import { auth, deleteLink, getUserInfo, getUserLinks } from "../../firebase";
 import Styles from "./profile.module.scss";
