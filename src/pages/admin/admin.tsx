@@ -1,14 +1,10 @@
 import {
   faBookReader,
   faChevronLeft,
-  faHome,
   faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import {
-  ActionButton,
-  LinkButton,
-} from "../../components/buttonWithIcon/buttonWithIcon";
+import { ActionButton } from "../../components/buttonWithIcon/buttonWithIcon";
 import { auth } from "../../firebase";
 import Styles from "./admin.module.scss";
 import ActionCard from "./components/actionCard/actionCard";
@@ -20,14 +16,12 @@ function Admin() {
   return (
     <div className={Styles.body}>
       <div className={Styles.buttonGroup}>
-        {panel !== "main" ? (
+        {panel !== "main" && (
           <ActionButton
             action={() => setPanel("main")}
             icon={faChevronLeft}
             text="Admin panel"
           />
-        ) : (
-          <LinkButton link="/" icon={faHome} text="Home" />
         )}
       </div>
       {panel === "main" && (

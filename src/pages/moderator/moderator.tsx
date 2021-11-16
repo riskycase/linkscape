@@ -1,7 +1,6 @@
 import {
   faChevronLeft,
   faChevronRight,
-  faHome,
   faTimes,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -10,10 +9,7 @@ import { deepEqual } from "@firebase/util";
 import { useState } from "react";
 import { deleteLink, deleteReports, getFlaggedLinks } from "../../firebase";
 import Styles from "./moderator.module.scss";
-import {
-  ActionButton,
-  LinkButton,
-} from "../../components/buttonWithIcon/buttonWithIcon";
+import { ActionButton } from "../../components/buttonWithIcon/buttonWithIcon";
 import LinkDiv from "../../components/linkDiv/linkDiv";
 
 function Moderator() {
@@ -27,7 +23,6 @@ function Moderator() {
     <div className={Styles.moderatorPage}>
       {activeLink === -1 ? (
         <div className={Styles.flaggedLinksPanel}>
-          <LinkButton link="/" icon={faHome} text="Home" />
           <span className={Styles.heading}>Flagged links</span>
           {links.map((link, index) => (
             <div

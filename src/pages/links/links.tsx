@@ -1,7 +1,5 @@
-import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useHistory } from "react-router";
-import { LinkButton } from "../../components/buttonWithIcon/buttonWithIcon";
 import CourseTable from "../../components/courseTable/courseTable";
 import { allCourses } from "../../firebase";
 import CoursePanel from "./components/coursePanel/coursePanel";
@@ -27,16 +25,13 @@ function Links() {
   return (
     <div className={Styles.linksPage}>
       {selectedCourse === -1 ? (
-        <>
-          <LinkButton link="/" icon={faHome} text="Home" />
-          <CourseTable
-            courses={courses}
-            setIndex={(index: number) => {
-              URLObject.searchParams.set("course", courses[index].code);
-              history.push("/links?" + URLObject.searchParams.toString());
-            }}
-          />
-        </>
+        <CourseTable
+          courses={courses}
+          setIndex={(index: number) => {
+            URLObject.searchParams.set("course", courses[index].code);
+            history.push("/links?" + URLObject.searchParams.toString());
+          }}
+        />
       ) : (
         <CoursePanel
           course={courses[selectedCourse]}

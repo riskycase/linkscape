@@ -1,8 +1,11 @@
 .navbar {
   --transition-time: 250ms;
   --size: 1rem;
-  background-color: #171923;
+  background-color: #1a202c;
   color: #edf2f7;
+  .homeButton {
+    color: #edf2f7;
+  }
   .navItem {
     display: flex;
     justify-content: flex-end;

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import Styles from "./home.module.scss";
 import coverImage from "../../coverImage.svg";
+import { LinkButton } from "../../components/buttonWithIcon/buttonWithIcon";
 
 function Home() {
   return (
@@ -11,11 +11,7 @@ function Home() {
         related links with anyone
       </div>
       <div className={Styles.buttonGroup}>
-        <Link to="/links">
-          <button className="uk-button uk-button-primary uk-border-pill">
-            Explore links
-          </button>
-        </Link>
+        <LinkButton text="Explore links" link="/links" />
       </div>
       <img src={coverImage} className={Styles.coverImage} alt="Cover" />
     </div>

@@ -12,6 +12,8 @@ import {
   FunctionWithIcon,
   LinkWithIcon,
 } from "../actionWithIcon/actionWithIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 
 const provider = new GoogleAuthProvider();
 
@@ -22,6 +24,11 @@ function Header({ admin, moderator }: { admin: boolean; moderator: boolean }) {
         className={`uk-navbar-container uk-navbar-transparent uk-padding-small ${Styles.navbar}`}
         uk-navbar="true"
       >
+        <div className="uk-navbar-left">
+          <Link to="/">
+            <FontAwesomeIcon icon={faHome} className={Styles.homeButton} />
+          </Link>
+        </div>
         <div className={`uk-navbar-right ${Styles.navItem}`}>
           <ul className="uk-navbar-nav">
             {!auth.currentUser ? (

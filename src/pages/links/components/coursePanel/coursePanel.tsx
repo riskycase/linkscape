@@ -159,27 +159,6 @@ function CoursePanel({
           </span>
           <span className={Styles.courseTitle}>{course.title}</span>
         </div>
-        {courseLinks.length ? (
-          <div className={Styles.linksList}>
-            {courseLinks.map((courseLink) => (
-              <div
-                className={Styles.linkDiv}
-                key={courseLink.id}
-                onClick={() => {
-                  URLObject.searchParams.set("link", courseLink.id);
-                  history.push("/links?" + URLObject.searchParams.toString());
-                }}
-              >
-                <div className="uk-panel uk-text-wrap uk-text-break">
-                  {courseLink.link.title}
-                </div>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <span>There are no links for this course!</span>
-        )}
         <div className={Styles.buttonGroup}>
           {auth.currentUser && (
             <ActionButton
@@ -201,6 +180,27 @@ function CoursePanel({
             text="Share Page"
           />
         </div>
+        {courseLinks.length ? (
+          <div className={Styles.linksList}>
+            {courseLinks.map((courseLink) => (
+              <div
+                className={Styles.linkDiv}
+                key={courseLink.id}
+                onClick={() => {
+                  URLObject.searchParams.set("link", courseLink.id);
+                  history.push("/links?" + URLObject.searchParams.toString());
+                }}
+              >
+                <div className="uk-panel uk-text-wrap uk-text-break">
+                  {courseLink.link.title}
+                </div>
+                <FontAwesomeIcon icon={faChevronRight} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span>There are no links for this course!</span>
+        )}
         {!auth.currentUser && (
           <span className={Styles.signInHint}>Sign in to add links</span>
         )}

@@ -1,4 +1,4 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Styles from "./courseTable.module.scss";
@@ -35,35 +35,30 @@ function CourseTable({
           />
         </div>
       </div>
-      <table className={`uk-table ${Styles.courseTable}`}>
-        <thead className={Styles.tableHeading}>
-          <tr className={Styles.tableRow}>
-            <th className={`uk-text-nowrap ${Styles.tableHeading}`}>
-              Course code
-            </th>
-            <th className={`uk-width-expand ${Styles.tableHeading}`}>Title</th>
-          </tr>
-        </thead>
-        <tbody className={Styles.tableBody}>
-          {courses.map((course, index) =>
-            isCourseInFilter(course, filter) ? (
-              <tr
-                key={index}
-                className={Styles.tableRow}
-                onClick={() => {
-                  setCourse && setCourse(courses[index]);
-                  setIndex && setIndex(index);
-                }}
-              >
-                <td>{course.code.replaceAll("/", "/ ")}</td>
-                <td className="uk-width-expand">{course.title}</td>
-              </tr>
-            ) : (
-              <></>
-            )
-          )}
-        </tbody>
-      </table>
+      <div className={Styles.courseList}>
+        {courses.map((course, index) =>
+          isCourseInFilter(course, filter) ? (
+            <div
+              key={index}
+              className={Styles.coursePanel}
+              onClick={() => {
+                setCourse && setCourse(courses[index]);
+                setIndex && setIndex(index);
+              }}
+            >
+              <div className={Styles.courseTexts}>
+                <span className={Styles.courseCode}>
+                  {course.code.replaceAll("/", "/ ")}
+                </span>
+                <span className={Styles.courseTitle}>{course.title}</span>
+              </div>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </div>
+          ) : (
+            <></>
+          )
+        )}
+      </div>
     </div>
   );
 }

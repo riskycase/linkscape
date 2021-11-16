@@ -1,9 +1,9 @@
 .container {
-  max-height: calc(100vh - 12rem);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
   .filterContainer {
-    position: sticky;
-    top: 0;
     padding: 1rem 0;
     background-color: #1a202c;
     .filterInput {
@@ -23,16 +23,32 @@
       }
     }
   }
-  .courseTable {
-    margin: 0;
-    .tableRow {
+  .courseList {
+    flex: 0 1 auto;
+    overflow-y: auto;
+    scroll-snap-type: y;
+    .coursePanel {
+      scroll-snap-align: start;
+      display: flex;
+      max-width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #a0aec0;
       border-bottom: 1px solid #a0aec0;
-      .tableHeading {
-        color: #cbd5e0;
+      .courseTexts {
+        display: flex;
+        flex-direction: column;
+        .courseTitle,
+        .courseCode {
+          font-weight: 350;
+          word-wrap: normal;
+          margin: 0.25rem 0;
+          text-transform: uppercase;
+        }
+        .courseCode {
+          font-size: 1.25rem;
+        }
       }
-    }
-    .tableBody {
-      overflow-y: auto;
     }
   }
 }

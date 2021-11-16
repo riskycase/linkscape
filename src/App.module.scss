@@ -1,14 +1,23 @@
 .app {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   .body {
-    flex-grow: 1;
+    flex: 1 1 auto;
     display: flex;
+    overflow-y: auto;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     background-color: #1a202c;
     color: #edf2f7;
+    ::-webkit-scrollbar {
+      width: 0.5rem;
+    }
+    ::-webkit-scrollbar-thumb {
+      border-radius: 0.25rem;
+      background-color: #4a5568;
+    }
   }
 }
