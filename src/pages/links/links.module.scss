@@ -1,8 +1,23 @@
 .linksPage {
+  --transition-time: 250ms;
   height: 100%;
   display: flex;
-  flex-direction: column;
   width: 100%;
   box-sizing: border-box;
   padding: 1rem;
+  .linksPageContainer {
+    width: 100%;
+    max-width: 100%;
+    transition: max-width ease-in-out var(--transition-time);
+    overflow-x: clip;
+    overflow-y: hidden;
+    height: 100%;
+    .innerContainer {
+      height: 100%;
+      width: calc(100vw - 2rem);
+    }
+  }
+  .hidden {
+    max-width: 0;
+  }
 }
