@@ -26,9 +26,7 @@
   .courseList {
     flex: 0 1 auto;
     overflow-y: auto;
-    scroll-snap-type: y;
     .coursePanel {
-      scroll-snap-align: start;
       display: flex;
       max-width: 100%;
       align-items: center;
