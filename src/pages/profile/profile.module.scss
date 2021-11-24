@@ -1,8 +1,11 @@
 .profilePage {
+  --transition-time: 250ms;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
+  height: 100%;
+  overflow: clip;
   padding: 0.5rem;
   box-sizing: border-box;
   .photoAndName {
@@ -34,12 +37,19 @@
         flex: 0 1 auto;
         width: fit-content;
       }
+      .linksCount {
+        margin: 0.5rem;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        font-weight: 350;
+      }
     }
   }
   .linksList {
     display: flex;
     flex-direction: column;
     width: 100%;
+    overflow-y: auto;
     .linkDiv {
       margin: 0.5rem 0;
       display: flex;
@@ -51,15 +61,22 @@
     .linkDetails {
       display: flex;
       flex-direction: column;
+      max-height: 25rem;
+      transition: max-height ease-in-out var(--transition-time);
+      overflow: clip;
       .buttonGroup {
         align-self: flex-end;
         display: flex;
         flex-wrap: wrap;
       }
     }
+    .hiddenLink {
+      max-height: 0;
+    }
   }
   .shareButton {
     align-self: flex-end;
+    margin: 0.25rem;
   }
   .doesntExist {
     margin: auto 0;

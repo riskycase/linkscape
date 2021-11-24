@@ -1,28 +1,19 @@
-.linkPanel {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  .signInHint {
-    width: 100%;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    margin: 0.5rem;
-    color: #cbd5e0;
-  }
-  .buttonGroup {
-    display: flex;
-    align-self: flex-end;
-    margin: 0.25rem;
-  }
-}
 .coursePanel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  .courseDetails {
+  height: 100%;
+  .buttonGroup {
+    display: flex;
+    width: 100%;
     margin: 1rem 0;
+    justify-content: space-between;
+    .buttonSubgroup {
+      display: flex;
+    }
+  }
+  .courseDetails {
+    margin: 0.5rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,28 +33,51 @@
       }
     }
   }
-  .linksList {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    .linkDiv {
-      margin: 1rem 0;
-      display: flex;
-      padding: 0.5rem;
-      box-sizing: border-box;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
   .signInHint {
     text-transform: uppercase;
     font-size: 0.75rem;
     align-self: flex-end;
     margin: 0.5rem;
   }
-  .buttonGroup {
+  .linksList {
     display: flex;
-    align-self: flex-end;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
+    .linkDiv {
+      padding: 1rem;
+      box-sizing: border-box;
+      .linkTitle {
+        display: flex;
+        justify-content: space-between;
+      }
+      .linkPanel {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-height: 25rem;
+        transition: max-height ease-in-out var(--transition-time);
+        overflow: clip;
+        width: 100%;
+        .signInHint {
+          width: 100%;
+          text-align: center;
+          text-transform: uppercase;
+          font-size: 0.75rem;
+          margin: 0.5rem;
+          color: #cbd5e0;
+        }
+        .buttonGroup {
+          display: flex;
+          align-self: flex-end;
+          width: auto;
+          margin: 0.25rem;
+        }
+      }
+      .hiddenLinkPanel {
+        max-height: 0;
+      }
+    }
   }
 }
 .addLinkPanel {

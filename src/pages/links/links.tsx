@@ -24,20 +24,35 @@ function Links() {
   });
   return (
     <div className={Styles.linksPage}>
-      {selectedCourse === -1 ? (
-        <CourseTable
-          courses={courses}
-          setIndex={(index: number) => {
-            URLObject.searchParams.set("course", courses[index].code);
-            history.push("/links?" + URLObject.searchParams.toString());
-          }}
-        />
-      ) : (
-        <CoursePanel
-          course={courses[selectedCourse]}
-          returnFunction={() => selectCourse(-1)}
-        />
-      )}
+      <div
+        className={`${Styles.linksPageContainer} ${
+          selectedCourse !== -1 ? Styles.hidden : ""
+        }`}
+      >
+        <div className={Styles.innerContainer}>
+          <CourseTable
+            courses={courses}
+            setIndex={(index: number) => {
+              URLObject.searchParams.set("course", courses[index].code);
+              history.push("/links?" + URLObject.searchParams.toString());
+            }}
+          />
+        </div>
+      </div>
+      <div
+        className={`${Styles.linksPageContainer} ${
+          selectedCourse === -1 ? Styles.hidden : ""
+        }`}
+      >
+        <div className={Styles.innerContainer}>
+          {selectedCourse !== -1 && (
+            <CoursePanel
+              course={courses[selectedCourse]}
+              returnFunction={() => selectCourse(-1)}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

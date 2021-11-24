@@ -53,12 +53,30 @@ function Profile() {
                   Moderator
                 </span>
               )}
+              <span className={Styles.linksCount}>
+                Shared {userLinks.length} link
+                {userLinks.length === 1 ? "" : "s"} till now
+              </span>
             </div>
           </div>
-          <span>
-            Shared {userLinks.length} link
-            {userLinks.length === 1 ? "" : "s"} till now
-          </span>
+          {auth.currentUser && uid === auth.currentUser.uid && (
+            <div className={Styles.shareButton}>
+              <ActionButton
+                action={() => {
+                  URLObject.searchParams.set("uid", auth.currentUser?.uid!!);
+                  navigator.clipboard.writeText(URLObject.href).then(() => {
+                    UIkit.notification("Profile URL copied to clipboard", {
+                      status: "success",
+                      timeout: 1500,
+                    });
+                    URLObject = new URL(window.location.href);
+                  });
+                }}
+                icon={faShare}
+                text="Share profile"
+              />
+            </div>
+          )}
           <div className={Styles.linksList}>
             {userLinks.map((userLink, index) => (
               <div className={Styles.linkContainer} key={userLink.id}>
@@ -75,63 +93,47 @@ function Profile() {
                     icon={selectedLink === index ? faChevronUp : faChevronDown}
                   />
                 </div>
-                {selectedLink === index && (
-                  <div className={Styles.linkDetails}>
-                    <LinkDiv link={userLink} />
-                    <div className={Styles.buttonGroup}>
-                      {auth.currentUser && uid === auth.currentUser.uid && (
-                        <ActionButton
-                          icon={faTrash}
-                          text="Delete"
-                          action={() => {
-                            deleteLink(userLink.id, auth.currentUser!!.uid!!)
-                              .then(() => getUserInfo(uid!!))
-                              .then((upstreamUserInfo) => {
-                                if (!userInfo) setUserInfo(upstreamUserInfo);
-                              })
-                              .then(() => {
-                                getUserLinks(uid!!).then((upstreamLinks) => {
-                                  if (!deepEqual(upstreamLinks, userLinks))
-                                    setUserLinks(upstreamLinks);
-                                  setSelectedLink(-1);
-                                });
-                              })
-                              .catch(() => setUserInfo(null));
-                          }}
-                        />
-                      )}
+                <div
+                  className={`${Styles.linkDetails} ${
+                    selectedLink !== index ? Styles.hiddenLink : ""
+                  }`}
+                >
+                  <LinkDiv link={userLink} />
+                  <div className={Styles.buttonGroup}>
+                    {auth.currentUser && uid === auth.currentUser.uid && (
                       <ActionButton
+                        icon={faTrash}
+                        text="Delete"
                         action={() => {
-                          let link = userLink.link.link;
-                          if (!link.startsWith("http")) link = "http://" + link;
-                          window.open(link, "_blank");
+                          deleteLink(userLink.id, auth.currentUser!!.uid!!)
+                            .then(() => getUserInfo(uid!!))
+                            .then((upstreamUserInfo) => {
+                              if (!userInfo) setUserInfo(upstreamUserInfo);
+                            })
+                            .then(() => {
+                              getUserLinks(uid!!).then((upstreamLinks) => {
+                                if (!deepEqual(upstreamLinks, userLinks))
+                                  setUserLinks(upstreamLinks);
+                                setSelectedLink(-1);
+                              });
+                            })
+                            .catch(() => setUserInfo(null));
                         }}
-                        icon={faExternalLinkAlt}
-                        text="Open"
                       />
-                    </div>
+                    )}
+                    <ActionButton
+                      action={() => {
+                        let link = userLink.link.link;
+                        if (!link.startsWith("http")) link = "http://" + link;
+                        window.open(link, "_blank");
+                      }}
+                      icon={faExternalLinkAlt}
+                      text="Open"
+                    />
                   </div>
-                )}
+                </div>
               </div>
             ))}
-            {auth.currentUser && uid === auth.currentUser.uid && (
-              <div className={Styles.shareButton}>
-                <ActionButton
-                  action={() => {
-                    URLObject.searchParams.set("uid", auth.currentUser?.uid!!);
-                    navigator.clipboard.writeText(URLObject.href).then(() => {
-                      UIkit.notification("Profile URL copied to clipboard", {
-                        status: "success",
-                        timeout: 1500,
-                      });
-                      URLObject = new URL(window.location.href);
-                    });
-                  }}
-                  icon={faShare}
-                  text="Share profile"
-                />
-              </div>
-            )}
           </div>
         </>
       ) : (
