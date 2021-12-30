@@ -112,7 +112,7 @@ function CoursePanel({
       {courseLinks.length ? (
         <div className={Styles.linksList}>
           {courseLinks.map((courseLink, index) => (
-            <div className={Styles.linkDiv}>
+            <div className={Styles.linkDiv} key={index}>
               <div
                 className={Styles.linkTitle}
                 key={courseLink.id}
@@ -244,7 +244,7 @@ function CoursePanel({
         </label>
         <input
           className={`uk-input ${Styles.input}`}
-          id="linkTitle"
+          id="linkLink"
           value={link.link}
           onChange={(event) => {
             setLink({
