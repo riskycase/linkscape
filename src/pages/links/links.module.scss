@@ -15,6 +15,7 @@
     .innerContainer {
       height: 100%;
       width: calc(100vw - 2rem);
+      overflow-y: auto;
     }
   }
   .hidden {
