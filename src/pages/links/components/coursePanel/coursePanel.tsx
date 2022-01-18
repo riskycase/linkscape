@@ -149,7 +149,9 @@ function CoursePanel({
                           UIkit.modal
                             .prompt("Enter reason for reporting", "")
                             .then((reason) =>
-                              reportLink(courseLinks[index], reason || "")
+                              reason !== null
+                                ? reportLink(courseLinks[index], reason || "")
+                                : Promise.reject("cancelled")
                             )
                             .then(() =>
                               UIkit.notification({
